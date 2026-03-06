@@ -1,0 +1,19 @@
+package:
+  name: ecosystem-site
+  bundle:
+    module: Main
+    outfile: public/bundle.js
+    platform: browser
+  dependencies:
+    - arrays: ">=7.3.0 <8.0.0"
+    - console: ">=6.1.0 <7.0.0"
+    - effect: ">=4.0.0 <5.0.0"
+    - foldable-traversable: ">=6.0.0 <7.0.0"
+    - maybe: ">=6.0.0 <7.0.0"
+    - prelude: ">=6.0.2 <7.0.0"
+    - sigil: "*"
+
+workspace:
+  extraPackages:
+    sigil:
+      path: ../../../purescript-hylograph-libs/purescript-sigil

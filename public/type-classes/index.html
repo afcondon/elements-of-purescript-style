@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Type Class Hierarchy &mdash; PureScript Ecosystem</title>
+  <link rel="stylesheet" href="../sigil.css">
+  <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+  <div class="page">
+    <nav class="breadcrumb">
+      <a href="../">Ecosystem</a><span class="sep">/</span>Type Classes
+    </nav>
+
+    <h1>The Type Class Hierarchy</h1>
+    <p class="subtitle">The intellectual backbone of PureScript</p>
+
+    <p class="pitch">
+      When you need to abstract over "things that can be mapped over," reach for
+      <code>Functor</code>. When you need to combine values, <code>Semigroup</code>.
+      When you need sequencing with context, <code>Monad</code>. These aren't academic
+      abstractions &mdash; they're the vocabulary that lets you write code once and
+      have it work across every container, every effect type, every data structure
+      that satisfies the contract.
+    </p>
+
+    <p>
+      PureScript inherits Haskell's type class hierarchy but makes it accessible
+      through a clean, minimal Prelude. The classes below form a lattice: each builds
+      on the ones above it, and understanding the hierarchy means understanding
+      what your types can do.
+    </p>
+
+    <!-- ================================================================= -->
+    <h2>The Functor Tower</h2>
+
+    <p>
+      The most important chain in PureScript. Every effect type, every container,
+      every parser and decoder implements some prefix of this tower.
+      <code>Functor</code> lets you transform contents.
+      <code>Apply</code> lets you combine independent computations.
+      <code>Bind</code> lets you sequence dependent ones.
+      <code>Monad</code> unifies them.
+    </p>
+
+    <div class="sigil-block">
+      <div class="sigil-label">class Functor</div>
+      <div id="sigil-class-functor"></div>
+    </div>
+
+    <p>
+      <code>map</code> transforms the value inside a context without changing
+      the context itself. Arrays, Maybes, Effects, parser results &mdash;
+      anything with a <code>Functor</code> instance lets you reach inside and transform.
+    </p>
+
+    <div class="sigil-block">
+      <div class="sigil-label">class Apply</div>
+      <div id="sigil-class-apply"></div>
+    </div>
+
+    <p>
+      <code>apply</code> is the workhorse of parallel computation. When two
+      things are independent &mdash; two API calls, two form validations, two
+      parser branches &mdash; <code>Apply</code> lets you combine them without
+      imposing an order. This is why <code>Applicative</code> validation can
+      collect <em>all</em> errors, not just the first.
+    </p>
+
+    <div class="sigil-block">
+      <div class="sigil-label">class Applicative</div>
+      <div id="sigil-class-applicative"></div>
+    </div>
+
+    <div class="sigil-block">
+      <div class="sigil-label">class Bind</div>
+      <div id="sigil-class-bind"></div>
+    </div>
+
+    <p>
+      <code>bind</code> (written <code>&gt;&gt;=</code>) is sequencing: the
+      result of the first computation determines what the second computation
+      <em>is</em>. This is strictly more powerful than <code>Apply</code> &mdash;
+      you can express conditional logic, early returns, dynamic dispatch.
+      The cost: you lose parallelism.
+    </p>
+
+    <div class="sigil-block">
+      <div class="sigil-label">class Monad</div>
+      <div id="sigil-class-monad"></div>
+    </div>
+
+    <p>
+      <code>Monad</code> itself has no methods. It's the combination of
+      <code>Applicative</code> and <code>Bind</code> &mdash; the statement that
+      a type supports both independent combination and dependent sequencing. If
+      something is a <code>Monad</code>, you can use <code>do</code> notation.
+    </p>
+
+    <!-- ================================================================= -->
+    <h2>The Algebraic Tower</h2>
+
+    <p>
+      Numbers aren't special in PureScript &mdash; they're just types that
+      happen to satisfy algebraic laws. <code>Semiring</code> gives you
+      addition and multiplication. Each step up the tower adds structure:
+      subtraction (<code>Ring</code>), commutativity, division
+      (<code>EuclideanRing</code>), and finally <code>Field</code>, where
+      everything works the way you'd expect from school arithmetic.
+    </p>
+
+    <div class="sigil-block">
+      <div class="sigil-label">class Semiring</div>
+      <div id="sigil-class-semiring"></div>
+    </div>
+
+    <div class="sigil-block">
+      <div class="sigil-label">class Ring</div>
+      <div id="sigil-class-ring"></div>
+    </div>
+
+    <div class="sigil-block">
+      <div class="sigil-label">class EuclideanRing</div>
+      <div id="sigil-class-euclideanring"></div>
+    </div>
+
+    <!-- ================================================================= -->
+    <h2>Eq &amp; Ord</h2>
+
+    <p>
+      Equality and ordering. In PureScript, these are type class methods, not
+      magic operators. This means you choose whether your type supports equality,
+      and the compiler enforces it &mdash; no runtime surprises.
+    </p>
+
+    <div class="sigil-block">
+      <div class="sigil-label">class Eq</div>
+      <div id="sigil-class-eq"></div>
+    </div>
+
+    <div class="sigil-block">
+      <div class="sigil-label">class Ord</div>
+      <div id="sigil-class-ord"></div>
+    </div>
+
+    <!-- ================================================================= -->
+    <h2>Semigroup &amp; Monoid</h2>
+
+    <p>
+      <code>Semigroup</code> means "things that combine."
+      <code>Monoid</code> adds an identity element. Strings, arrays, maps,
+      functions, <code>Maybe</code> &mdash; the combining abstraction is
+      everywhere once you notice it.
+    </p>
+
+    <div class="sigil-block">
+      <div class="sigil-label">class Semigroup</div>
+      <div id="sigil-class-semigroup"></div>
+    </div>
+
+    <div class="sigil-block">
+      <div class="sigil-label">class Monoid</div>
+      <div id="sigil-class-monoid"></div>
+    </div>
+
+    <!-- ================================================================= -->
+    <h2>Foldable &amp; Traversable</h2>
+
+    <p>
+      <code>Foldable</code> means "can be reduced to a summary value."
+      <code>Traversable</code> means "can be walked with effects." Together
+      they're the reason you can write one function that works on arrays, lists,
+      maps, trees &mdash; anything with structure.
+    </p>
+
+    <div class="sigil-block">
+      <div class="sigil-label">class Foldable</div>
+      <div id="sigil-class-foldable"></div>
+    </div>
+
+    <div class="sigil-block">
+      <div class="sigil-label">class Traversable</div>
+      <div id="sigil-class-traversable"></div>
+    </div>
+
+    <div class="footer">
+      <a href="../">&larr; Back to guide</a>
+    </div>
+  </div>
+
+  <script type="module" src="../bundle.js"></script>
+</body>
+</html>

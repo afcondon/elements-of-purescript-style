@@ -1,0 +1,202 @@
+/* =============================================================================
+   Ecosystem Guide — Swiss Typographic Style
+   ============================================================================= */
+
+:root {
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+  --font-mono: 'Fira Code', 'SF Mono', 'Consolas', monospace;
+  --color-bg: #fafaf8;
+  --color-text: #1a1a1a;
+  --color-muted: #64748b;
+  --color-rule: #e2e2dd;
+  --color-accent: #6366f1;
+  --max-width: 860px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.65;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* -- Layout -- */
+
+.page { max-width: var(--max-width); margin: 0 auto; padding: 3rem 1.5rem 6rem; }
+
+/* -- Typography -- */
+
+h1 {
+  font-size: 2.25rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  margin-bottom: 0.5rem;
+}
+
+h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-top: 3rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--color-rule);
+}
+
+h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+p { margin-bottom: 1rem; }
+
+.subtitle {
+  font-size: 1.1rem;
+  color: var(--color-muted);
+  margin-bottom: 2rem;
+}
+
+.pitch {
+  font-size: 1.05rem;
+  line-height: 1.7;
+  color: #334155;
+  margin-bottom: 1.5rem;
+}
+
+a { color: var(--color-accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* -- Section navigation grid -- */
+
+.section-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--color-rule);
+  border: 1px solid var(--color-rule);
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 2rem 0;
+}
+
+.section-card {
+  background: white;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  transition: background 0.15s;
+}
+.section-card:hover { background: #f8f8f6; }
+
+.section-card .num {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-muted);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.section-card .title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text);
+}
+.section-card .tagline {
+  font-size: 0.8125rem;
+  color: var(--color-muted);
+  line-height: 1.45;
+}
+
+/* Category headers spanning the grid */
+.section-category {
+  grid-column: 1 / -1;
+  background: #f4f4f0;
+  padding: 0.6rem 1.5rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+/* -- Sigil rendering blocks -- */
+
+.sigil-block {
+  margin: 1.5rem 0;
+  padding: 1.25rem 1.5rem;
+  background: white;
+  border: 1px solid var(--color-rule);
+  border-radius: 6px;
+}
+
+.sigil-block + .sigil-block { margin-top: 0.75rem; }
+
+.sigil-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  margin-bottom: 0.5rem;
+}
+
+/* -- Breadcrumb / nav -- */
+
+.breadcrumb {
+  font-size: 0.8125rem;
+  color: var(--color-muted);
+  margin-bottom: 2rem;
+}
+.breadcrumb a { color: var(--color-muted); }
+.breadcrumb a:hover { color: var(--color-accent); }
+.breadcrumb .sep { padding: 0 0.4em; }
+
+/* -- Code blocks -- */
+
+pre {
+  background: white;
+  border: 1px solid var(--color-rule);
+  border-radius: 6px;
+  padding: 1rem 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 1.6;
+  overflow-x: auto;
+  margin: 1rem 0;
+}
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+}
+
+/* Inline code (not sigil) */
+p code, li code {
+  background: #f0f0ec;
+  padding: 0.15em 0.35em;
+  border-radius: 3px;
+}
+
+/* -- Footer -- */
+
+.footer {
+  margin-top: 4rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--color-rule);
+  font-size: 0.8125rem;
+  color: var(--color-muted);
+}
+
+/* -- Responsive -- */
+
+@media (max-width: 640px) {
+  .section-grid { grid-template-columns: 1fr; }
+  h1 { font-size: 1.75rem; }
+}

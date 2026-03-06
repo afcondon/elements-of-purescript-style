@@ -1,0 +1,6 @@
+.spago/
+output/
+node_modules/
+spago.lock
+public/bundle.js
+.psc-ide-port
