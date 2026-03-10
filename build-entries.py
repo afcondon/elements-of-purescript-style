@@ -66,16 +66,28 @@ def parse_degustibus(text):
         })
     return entries
 
+def parse_section_name(text):
+    """Extract section name from # heading if present."""
+    m = re.match(r'^# (.+)$', text, re.MULTILINE)
+    return m.group(1).strip() if m else None
+
+
 def main():
     root = Path(__file__).parent
-    files = [
-        "draft-entries.md",
-        "entries-09-32.md",
-        "entries-33-58.md",
-        "entries-59-94.md",
-        "entries-95-132.md",
-        "entries-133-164-degustibus.md",
-    ]
+    sections_dir = root / "sections"
+
+    # Use sections/ directory if it exists, fall back to old flat files
+    if sections_dir.exists():
+        files = sorted(str(p.relative_to(root)) for p in sections_dir.glob("sec-*.md"))
+    else:
+        files = [
+            "draft-entries.md",
+            "entries-09-32.md",
+            "entries-33-58.md",
+            "entries-59-94.md",
+            "entries-95-132.md",
+            "entries-133-164-degustibus.md",
+        ]
 
     all_entries = []
     all_dg = []
@@ -86,7 +98,13 @@ def main():
             print(f"Warning: {fname} not found", file=sys.stderr)
             continue
         text = path.read_text()
-        all_entries.extend(parse_entries(text))
+        section_name = parse_section_name(text)
+
+        entries = parse_entries(text)
+        for e in entries:
+            if section_name:
+                e["section_name"] = section_name
+        all_entries.extend(entries)
         all_dg.extend(parse_degustibus(text))
 
     # Deduplicate by id (earlier files take precedence)

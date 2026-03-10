@@ -1,8 +1,9 @@
 // The Elements of PureScript Style — Review App
-// Votes and notes stored in localStorage.
+// Votes, notes, and edit tracking stored in localStorage.
 
-const STORAGE_KEY = "ps-style-votes";
-const NOTES_KEY = "ps-style-notes";
+const STORAGE_KEY = "ps-style-votes-v2";
+const NOTES_KEY = "ps-style-notes-v2";
+const EDITS_KEY = "ps-style-edits-v2";
 
 let data = null;
 let currentFilter = "all";
@@ -25,6 +26,15 @@ function loadNotes() {
 
 function saveNotes(notes) {
   localStorage.setItem(NOTES_KEY, JSON.stringify(notes));
+}
+
+function loadEdits() {
+  try { return JSON.parse(localStorage.getItem(EDITS_KEY)) || {}; }
+  catch { return {}; }
+}
+
+function saveEdits(edits) {
+  localStorage.setItem(EDITS_KEY, JSON.stringify(edits));
 }
 
 // -- Markdown rendering (minimal) --
@@ -89,16 +99,23 @@ function escapeHtml(str) {
 
 // -- Rendering --
 
-function renderEntry(entry, votes, notes) {
+function renderEntry(entry, votes, notes, edits) {
   const id = String(entry.id);
   const vote = votes[id] || null;
   const note = notes[id] || "";
+  const editStatus = edits[id] || null; // "edited" or "approved"
   const isDG = entry.section === "degustibus";
   const num = isDG ? "DG" : String(entry.id);
 
   const badgeHtml = vote
     ? `<span class="entry-badge badge-${vote}">${vote}</span>`
     : "";
+
+  const editBadgeHtml = editStatus === "edited"
+    ? `<span class="entry-badge badge-edited">edited</span>`
+    : editStatus === "approved"
+      ? `<span class="entry-badge badge-approved">approved</span>`
+      : "";
 
   const voteButtons = isDG
     ? "" // De Gustibus entries don't get voted on the same way
@@ -107,13 +124,37 @@ function renderEntry(entry, votes, notes) {
         return `<button class="vote-btn ${cls}" data-id="${id}" data-vote="${v}">${v}</button>`;
       }).join("\n");
 
+  // Edit action buttons — shown when there's an edit status or a note
+  let editActions = "";
+  if (editStatus === "edited") {
+    editActions = `
+      <div class="edit-actions">
+        <span class="edit-hint">This entry was edited in response to your note.</span>
+        <button class="edit-action-btn approve-btn" data-id="${id}">Approve edit</button>
+        <button class="edit-action-btn rescind-btn" data-id="${id}">Clear note</button>
+      </div>`;
+  } else if (editStatus === "approved") {
+    editActions = `
+      <div class="edit-actions">
+        <span class="edit-hint approved-hint">Edit approved.</span>
+        <button class="edit-action-btn unapprove-btn" data-id="${id}">Reopen</button>
+        <button class="edit-action-btn rescind-btn" data-id="${id}">Clear note</button>
+      </div>`;
+  } else if (note) {
+    editActions = `
+      <div class="edit-actions">
+        <button class="edit-action-btn rescind-btn" data-id="${id}">Clear note</button>
+      </div>`;
+  }
+
   const collapsed = vote && currentFilter === "all" ? "collapsed" : "";
 
   return `
-    <div class="entry ${collapsed}" data-entry-id="${id}" data-vote="${vote || "unreviewed"}" data-section="${entry.section}">
+    <div class="entry ${collapsed}" data-entry-id="${id}" data-vote="${vote || "unreviewed"}" data-edit="${editStatus || ""}" data-section="${entry.section}">
       <div class="entry-header">
         <span class="entry-num">${num}</span>
         <span class="entry-title">${escapeHtml(entry.title)}</span>
+        ${editBadgeHtml}
         ${badgeHtml}
       </div>
       <div class="entry-body">
@@ -123,6 +164,7 @@ function renderEntry(entry, votes, notes) {
       <div class="note-area">
         <textarea placeholder="Notes..." data-note-id="${id}">${escapeHtml(note)}</textarea>
       </div>
+      ${editActions}
     </div>
   `;
 }
@@ -130,13 +172,23 @@ function renderEntry(entry, votes, notes) {
 function renderAll() {
   const votes = loadVotes();
   const notes = loadNotes();
+  const edits = loadEdits();
   const container = document.getElementById("entries");
 
   let html = "";
 
   // Filter entries
-  const filtered = data.entries.filter(e => matchesFilter(e, votes));
-  html += filtered.map(e => renderEntry(e, votes, notes)).join("");
+  const filtered = data.entries.filter(e => matchesFilter(e, votes, edits));
+
+  // Render with section headers
+  let lastSection = null;
+  for (const e of filtered) {
+    if (e.section_name && e.section_name !== lastSection) {
+      lastSection = e.section_name;
+      html += `<div class="dg-separator">${escapeHtml(e.section_name)}</div>`;
+    }
+    html += renderEntry(e, votes, notes, edits);
+  }
 
   // De Gustibus section
   if (currentFilter === "all" || currentFilter === "degustibus" || currentFilter === "unreviewed") {
@@ -153,37 +205,45 @@ function renderAll() {
           <div class="dg-subtitle">Matters where reasonable programmers differ. We present the cases without ruling.</div>
         </div>
       `;
-      html += filteredDG.map(e => renderEntry(e, votes, notes)).join("");
+      html += filteredDG.map(e => renderEntry(e, votes, notes, edits)).join("");
     }
   }
 
   container.innerHTML = html;
-  updateStats(votes);
+  updateStats(votes, edits);
   attachListeners();
 }
 
-function matchesFilter(entry, votes) {
-  const vote = votes[String(entry.id)] || null;
+function matchesFilter(entry, votes, edits) {
+  const id = String(entry.id);
+  const vote = votes[id] || null;
+  const editStatus = edits[id] || null;
   if (currentFilter === "all") return entry.section !== "degustibus";
   if (currentFilter === "unreviewed") return !vote && entry.section !== "degustibus";
   if (currentFilter === "degustibus") return false; // handled separately
+  if (currentFilter === "edited") return editStatus === "edited" && entry.section !== "degustibus";
+  if (currentFilter === "has-notes") return loadNotes()[id] && entry.section !== "degustibus";
   return vote === currentFilter;
 }
 
-function updateStats(votes) {
+function updateStats(votes, edits) {
   const total = data.entries.length;
   const counts = { good: 0, poor: 0, wrong: 0, obsolete: 0, taste: 0 };
   let reviewed = 0;
+  let editedCount = 0;
 
   for (const entry of data.entries) {
-    const v = votes[String(entry.id)];
+    const id = String(entry.id);
+    const v = votes[id];
     if (v) {
       reviewed++;
       if (counts[v] !== undefined) counts[v]++;
     }
+    if (edits[id] === "edited") editedCount++;
   }
 
-  const statsText = `${reviewed}/${total} reviewed: ${counts.good} good, ${counts.poor} poor, ${counts.wrong} wrong, ${counts.obsolete} obsolete, ${counts.taste} taste`;
+  let statsText = `${reviewed}/${total} reviewed: ${counts.good} good, ${counts.poor} poor, ${counts.wrong} wrong, ${counts.obsolete} obsolete, ${counts.taste} taste`;
+  if (editedCount > 0) statsText += ` · ${editedCount} edited`;
   document.getElementById("stats").textContent = statsText;
   const statsBar = document.getElementById("stats-bar");
   if (statsBar) statsBar.textContent = statsText;
@@ -228,6 +288,43 @@ function attachListeners() {
       saveNotes(notes);
     });
   });
+
+  // Approve edit
+  document.querySelectorAll(".approve-btn").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const edits = loadEdits();
+      edits[btn.dataset.id] = "approved";
+      saveEdits(edits);
+      renderAll();
+    });
+  });
+
+  // Unapprove (reopen)
+  document.querySelectorAll(".unapprove-btn").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const edits = loadEdits();
+      edits[btn.dataset.id] = "edited";
+      saveEdits(edits);
+      renderAll();
+    });
+  });
+
+  // Clear note (rescind) — approves implicitly since you're done with it
+  document.querySelectorAll(".rescind-btn").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const id = btn.dataset.id;
+      const notes = loadNotes();
+      const edits = loadEdits();
+      delete notes[id];
+      if (edits[id]) edits[id] = "approved";
+      saveNotes(notes);
+      saveEdits(edits);
+      renderAll();
+    });
+  });
 }
 
 // -- Filter buttons --
@@ -246,9 +343,11 @@ document.querySelectorAll(".filter-btn").forEach(btn => {
 document.getElementById("export-btn").addEventListener("click", () => {
   const votes = loadVotes();
   const notes = loadNotes();
+  const edits = loadEdits();
   const exported = {
     votes,
     notes,
+    edits,
     exportedAt: new Date().toISOString(),
     entries: data.entries.length,
     degustibus: data.degustibus.length
@@ -263,19 +362,64 @@ document.getElementById("export-btn").addEventListener("click", () => {
 });
 
 document.getElementById("clear-btn").addEventListener("click", () => {
-  if (confirm("Clear all votes and notes? This cannot be undone.")) {
+  if (confirm("Clear all votes, notes, and edit markers? This cannot be undone.")) {
     localStorage.removeItem(STORAGE_KEY);
     localStorage.removeItem(NOTES_KEY);
+    localStorage.removeItem(EDITS_KEY);
     renderAll();
   }
 });
 
+// -- Mark edits from import --
+
+document.getElementById("import-edits-btn").addEventListener("click", () => {
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = ".json";
+  input.addEventListener("change", () => {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const imported = JSON.parse(reader.result);
+        if (imported.edits) {
+          const edits = loadEdits();
+          Object.assign(edits, imported.edits);
+          saveEdits(edits);
+          renderAll();
+        } else {
+          alert("No edit markers found in file.");
+        }
+      } catch (err) {
+        alert("Could not parse file: " + err.message);
+      }
+    };
+    reader.readAsText(file);
+  });
+  input.click();
+});
+
 // -- Init --
 
-fetch("entries.json")
-  .then(r => r.json())
-  .then(d => {
+Promise.all([
+  fetch("entries.json").then(r => r.json()),
+  fetch("edit-markers.json").then(r => r.json()).catch(() => null)
+])
+  .then(([d, markers]) => {
     data = d;
+    // Auto-merge edit markers from file (non-destructive: won't overwrite "approved")
+    if (markers && markers.edits) {
+      const edits = loadEdits();
+      let merged = 0;
+      for (const [id, status] of Object.entries(markers.edits)) {
+        if (edits[id] !== "approved") {
+          edits[id] = status;
+          merged++;
+        }
+      }
+      saveEdits(edits);
+    }
     renderAll();
   })
   .catch(err => {

@@ -4,3 +4,9 @@ node_modules/
 spago.lock
 public/bundle.js
 .psc-ide-port
+__pycache__/
+*.pyc
+.DS_Store
+public/votes*.json
+public/edit-markers.json
+.claude/

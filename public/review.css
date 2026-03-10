@@ -214,6 +214,7 @@
 
 .entry.collapsed .entry-body { display: none; }
 .entry.collapsed .vote-bar { display: none; }
+.entry.collapsed .edit-actions { display: none; }
 .entry.collapsed { margin-bottom: 0.5rem; padding-bottom: 0.5rem; }
 .entry-header { cursor: pointer; }
 
@@ -241,6 +242,75 @@
   border-color: var(--color-accent);
 }
 .note-area textarea::placeholder { color: #94a3b8; }
+
+/* -- Edit status badges -- */
+
+.badge-edited { background: #dbeafe; color: #1e40af; }
+.badge-approved { background: #d1fae5; color: #065f46; }
+
+/* -- Edit actions -- */
+
+.edit-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background: #f0f4ff;
+  border-radius: 4px;
+  border: 1px solid #dbeafe;
+}
+
+.edit-hint {
+  font-size: 0.75rem;
+  color: #1e40af;
+  font-weight: 500;
+  flex: 1;
+}
+
+.approved-hint {
+  color: #065f46;
+}
+
+.edit-action-btn {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 0.25rem 0.6rem;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.12s;
+  flex-shrink: 0;
+}
+
+.approve-btn {
+  background: #059669;
+  color: white;
+  border: 1px solid #059669;
+}
+.approve-btn:hover { background: #047857; }
+
+.unapprove-btn {
+  background: white;
+  color: #1e40af;
+  border: 1px solid #93c5fd;
+}
+.unapprove-btn:hover { background: #eff6ff; }
+
+.rescind-btn {
+  background: white;
+  color: var(--color-muted);
+  border: 1px solid var(--color-rule);
+}
+.rescind-btn:hover { color: #991b1b; border-color: #fca5a5; }
+
+/* -- Filter button variants -- */
+
+.filter-btn[data-filter="edited"] { }
+.filter-btn[data-filter="edited"].active { background: #1e40af; border-color: #1e40af; }
+.filter-btn[data-filter="has-notes"].active { background: #7c3aed; border-color: #7c3aed; }
 
 @media (max-width: 640px) {
   .entry-header { flex-wrap: wrap; }

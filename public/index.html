@@ -11,7 +11,7 @@
   <div class="page">
     <header class="site-header">
       <h1>The Elements of PureScript Style</h1>
-      <p class="subtitle">Review Draft &mdash; 164 entries + 15 De Gustibus</p>
+      <p class="subtitle">Review Draft &mdash; 178 entries in 18 sections + 14 De Gustibus</p>
     </header>
 
     <div class="controls">
@@ -23,6 +23,8 @@
         <button class="filter-btn" data-filter="wrong">Wrong</button>
         <button class="filter-btn" data-filter="obsolete">Obsolete</button>
         <button class="filter-btn" data-filter="taste">Taste</button>
+        <button class="filter-btn" data-filter="edited">Edited</button>
+        <button class="filter-btn" data-filter="has-notes">Has Notes</button>
         <button class="filter-btn" data-filter="degustibus">De Gustibus</button>
       </div>
       <div class="stats" id="stats"></div>
@@ -38,6 +40,8 @@
     <button id="export-btn" class="link-btn">Export votes as JSON</button>
     <span>&middot;</span>
     <button id="clear-btn" class="link-btn">Clear all votes</button>
+    <span>&middot;</span>
+    <button id="import-edits-btn" class="link-btn">Import edit markers</button>
   </div>
 
   <script src="review.js"></script>
