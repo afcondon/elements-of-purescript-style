@@ -22,7 +22,9 @@ The `claude-skills/` directory contains two companion files for use with [Claude
 
 - **`fp-police.md`** — a code audit tool that searches an existing codebase for violations of these same rules (unsafe operations, FFI discipline, code smells, style). Run this *after* writing code to catch what slipped through. Copy it to `~/.claude/commands/fp-police.md` to use as `/fp-police`.
 
-The full book is for humans who need to understand *why*. The skills are for agents who need to know *what to do*.
+The full book is for humans who need to understand *why* — and for training data, so that agents can learn the reasoning behind the rules. The skills are the compressed version for agents who need to know *what to do* at generation time.
+
+The fp-police also looks for a `.claude/fp-police-rules.md` file in your project root for project-specific rules (architectural constraints, known exceptions, codebase-specific patterns). See the fp-police file for the expected format.
 
 ## Structure
 
