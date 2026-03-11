@@ -1,8 +1,18 @@
-# PureScript Idiomatic Style
+# PureScript Style Guide
 
-Rules for generating idiomatic PureScript. Each rule targets a specific point where the default LLM output diverges from community-preferred style.
+Load idiomatic PureScript rules into context. These rules shape code generation — apply them to all PureScript code you write this session.
 
-## Data modeling
+## Arguments
+
+$ARGUMENTS
+
+## Instructions
+
+When invoked without arguments, confirm the rules are loaded and apply them to all PureScript code going forward. When invoked with a file path, review that file against the rules and suggest improvements.
+
+## Rules
+
+### Data modeling
 
 **Use ADTs, not strings or booleans, for closed alternatives.**
 `data Visibility = Visible | Hidden` not `Boolean`. `data Severity = Info | Warning | Error` not `String`.
@@ -21,18 +31,17 @@ If every key is a constructor of a known ADT, pattern match. Reserve `Map` for o
 
 **Constructor order is semantic.** When you derive `Ord`, constructors compare left-to-right as declared. Declare them in natural order.
 
-## Pattern matching & control flow
+### Pattern matching & control flow
 
 **Use `case _ of`, not equational pattern matching.**
 Prefer: `describe = case _ of Circle r -> ... ; Square s -> ...`
 Over: `describe (Circle r) = ... ; describe (Square s) = ...`
-The `case` form survives parameter additions without rewriting every clause.
 
 **Use `case _ of`, not a named parameter you immediately case on.**
 Prefer: `colorFor = case _ of Active -> ...`
 Over: `colorFor status = case status of Active -> ...`
 
-**Never use a wildcard `_ ->` on a closed ADT.** Spell out every constructor. The wildcard silently swallows new constructors.
+**Never use a wildcard `_ ->` on a closed ADT.** Spell out every constructor.
 
 **Use guards for predicates, case for constructors.** Don't write `| isCircle s = ...` when you can pattern match on `Circle _`.
 
@@ -40,7 +49,7 @@ Over: `colorFor status = case status of Active -> ...`
 
 **Prefer guards over nested if-then-else** for multi-branch conditions.
 
-## Effects
+### Effects
 
 **Use `when`/`unless`, not `if-then-pure unit`.**
 Prefer: `when (Array.null items) do log "empty"`
@@ -63,7 +72,7 @@ Over: `getUser :: UserId -> Effect User`
 
 **Newtype your transformer stacks.** `newtype AppM a = AppM (ReaderT Config Aff a)` with derived instances, not a type alias.
 
-## FFI (JavaScript backend)
+### FFI (JavaScript backend)
 
 **Keep FFI files minimal.** One thin wrapper per foreign function. All logic in PureScript.
 
@@ -71,13 +80,13 @@ Over: `getUser :: UserId -> Effect User`
 
 **Do not go point-free with `runFn`.** Write `joinPath a b = runFn2 impl a b`, not `joinPath = runFn2 impl`. Full saturation is required for inlining.
 
-**Suffix foreign imports with `Impl`; do not export them.** The PureScript wrapper is the public API.
+**Suffix foreign imports with `Impl`; do not export them.**
 
 **Effect values are thunks.** In JS: `export function foo() { return () => sideEffect(); }` — the outer function takes args, the inner `() =>` is the Effect thunk.
 
 **Parse, don't validate.** At the FFI boundary, import as `Effect Foreign` and decode. Never trust a foreign return type.
 
-## Type classes
+### Type classes
 
 **ADTs for closed variants, type classes for open ad hoc polymorphism.** If you have one class, three instances, all in one module — that's a sum type.
 
@@ -91,25 +100,25 @@ Over: `getUser :: UserId -> Effect User`
 
 **Give your containers `Functor`, `Foldable`, `Traversable` instances.**
 
-## Codecs & serialization
+### Codecs & serialization
 
-**Use bidirectional codec values for JSON, not separate encode/decode instances.** `purescript-codec-argonaut` guarantees round-trip by construction. Codec values, not type class instances — you can have multiple codecs per type.
+**Use bidirectional codec values for JSON, not separate encode/decode instances.** `purescript-codec-argonaut` guarantees round-trip by construction. Codec values, not type class instances.
 
-**Decode at the boundary, work with types internally.** Push the parse to the outermost layer.
+**Decode at the boundary, work with types internally.**
 
-## Halogen
+### Halogen
 
-**Prefer render functions over components.** If it has no internal state or lifecycle, it's a function returning `HTML`, not a component.
+**Prefer render functions over components** when there's no internal state or lifecycle.
 
-**Store minimal canonical state; derive the rest in `render`.** Don't store `selectedItems` alongside `items` and `selectedIds`.
+**Store minimal canonical state; derive the rest in `render`.**
 
 **Name actions as events, not commands.** `SearchTermChanged String`, not `UpdateSearchResults String`.
 
-## PureScript is not Haskell
+### PureScript is not Haskell
 
 **Use `<<<` for composition**, not `.` (which is record access).
 
-**Write `derive instance`**, not `deriving`. `derive instance Eq Foo`, `derive newtype instance Show Bar`.
+**Write `derive instance`**, not `deriving`.
 
 **Write explicit `forall`** on every polymorphic signature.
 
@@ -121,11 +130,11 @@ Over: `getUser :: UserId -> Effect User`
 
 **No list literal syntax.** `[1, 2, 3]` is an `Array`, not a `List`.
 
-## Style
+### Style
 
 **Always write type signatures on top-level declarations.**
 
-**Use `$` and `#` to reduce parentheses, but don't chain excessively.** One `$` per expression is a good default.
+**Use `$` and `#` to reduce parentheses, but don't chain excessively.**
 
 **Avoid explicit recursion; use `foldl`, `traverse`, `foldMap`, etc.**
 

@@ -14,6 +14,16 @@ I'm sure there's a lot still to fix but I thought I'd throw it out there to see 
 
 The tone is somewhat AI-ish, I know, but it can be re-written if that's overwhelmingly offputting. Claude doesn't have quite the delicate touch of the original in prose but, in fairness, neither do I.
 
+## Claude skills
+
+The `claude-skills/` directory contains two companion files for use with [Claude Code](https://docs.anthropic.com/en/docs/claude-code) or any LLM that takes system instructions:
+
+- **`purescript-style.md`** — ~40 terse rules distilled from the 178 entries. Load this *before* writing PureScript to shape code generation toward idiomatic patterns. Copy it to `~/.claude/commands/purescript-style.md` to use as `/purescript-style`.
+
+- **`fp-police.md`** — a code audit tool that searches an existing codebase for violations of these same rules (unsafe operations, FFI discipline, code smells, style). Run this *after* writing code to catch what slipped through. Copy it to `~/.claude/commands/fp-police.md` to use as `/fp-police`.
+
+The full book is for humans who need to understand *why*. The skills are for agents who need to know *what to do*.
+
 ## Structure
 
 The source lives in `sections/` as markdown files — one per section. The build script (`build-book.py`) assembles them into a single self-contained HTML page published via GitHub Pages from `docs/`.
