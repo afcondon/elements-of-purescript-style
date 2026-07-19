@@ -14,6 +14,5 @@ package:
     - sigil: "*"
 
 workspace:
-  extraPackages:
-    sigil:
-      path: ../../../purescript-hylograph-libs/purescript-sigil
+  packageSet:
+    registry: 77.13.1
