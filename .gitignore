@@ -10,3 +10,4 @@ __pycache__/
 public/votes*.json
 public/edit-markers.json
 .claude/
+.direnv/
