@@ -2,7 +2,7 @@
 
 **[Read the guide](https://afcondon.github.io/elements-of-purescript-style/)**
 
-178 entries in 18 sections + 14 De Gustibus.
+179 entries in 18 sections + 14 De Gustibus.
 
 ---
 

@@ -196,3 +196,27 @@ That said, "zero warnings always" is a guideline, not a law. Shadowed name warni
 
 
 ---
+
+
+## 177. Spell out type variables that barely appear
+
+A type parameter that occurs only a handful of times in a declaration has no business being abbreviated. `data Why rule ax` saves three characters over `data Why rule axiom` and charges every reader a decode.
+
+```purescript
+-- The abbreviation saves nothing worth saving:
+data Why rule ax
+  = Axiom ax
+  | ByRule { rule :: rule, source :: ax, premises :: Array FactId, anchors :: Array ax }
+
+-- The word is the documentation:
+data Why rule axiom
+  = Axiom axiom
+  | ByRule { rule :: rule, source :: axiom, premises :: Array FactId, anchors :: Array axiom }
+```
+
+Single letters earn their keep through convention, not brevity: `a` for "any type whatsoever", `m` for the monad, `f` for the functor, `t` for the traversable. A reader of `traverse :: (a -> m b) -> t a -> m (t b)` decodes nothing, because those letters are idioms with forty years of standing. But `ax`, `res`, `env`, `cfg` are neither convention nor description — each is a small private code the reader must crack from context, and the context is exactly what a type declaration exists to establish.
+
+Whatever the case for terseness in signatures a library threads through every function — and it is weaker than it used to be, now that code is written and read by tools that never tire of typing — there is no case at all where the variable appears twice. Use the word.
+
+
+---

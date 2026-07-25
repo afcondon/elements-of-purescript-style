@@ -139,3 +139,5 @@ Over: `getUser :: UserId -> Effect User`
 **Avoid explicit recursion; use `foldl`, `traverse`, `foldMap`, etc.**
 
 **Qualify container imports:** `import Data.Map as Map`, `import Data.Set as Set`.
+
+**Spell out type variables that barely appear:** `data Why rule axiom`, not `data Why rule ax`. Single letters are fine only where convention carries them (`a`, `m`, `f`, `t`); ad-hoc abbreviations (`ax`, `res`, `env`) are a private code with no payoff in a declaration where the variable occurs twice.

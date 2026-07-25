@@ -2738,11 +2738,24 @@ do
     strict: true</code></pre>
 <p>A codebase with a dozen warnings trains its authors to ignore the thirteenth — which might be the one that matters. The goal is that every warning is either fixed or consciously suppressed with a reason.</p>
 <p>That said, "zero warnings always" is a guideline, not a law. Shadowed name warnings, for instance, are sometimes a sign of clear code — a <code>let</code> rebinding a function parameter with the same name after validation is arguably <em>more</em> readable than inventing a new name. The <code>censor_warnings</code> mechanism exists precisely so you can make deliberate, documented decisions about which warnings matter in your codebase. The sin is not having warnings; it is having warnings nobody looks at.</p>
+<h3 id="entry-177"><a href="#entry-177" class="entry-link"><span class="entry-num">177.</span></a> Spell out type variables that barely appear</h3>
+<p>A type parameter that occurs only a handful of times in a declaration has no business being abbreviated. <code>data Why rule ax</code> saves three characters over <code>data Why rule axiom</code> and charges every reader a decode.</p>
+<pre><code class="language-haskell">-- The abbreviation saves nothing worth saving:
+data Why rule ax
+  = Axiom ax
+  | ByRule { rule :: rule, source :: ax, premises :: Array FactId, anchors :: Array ax }
+
+-- The word is the documentation:
+data Why rule axiom
+  = Axiom axiom
+  | ByRule { rule :: rule, source :: axiom, premises :: Array FactId, anchors :: Array axiom }</code></pre>
+<p>Single letters earn their keep through convention, not brevity: <code>a</code> for "any type whatsoever", <code>m</code> for the monad, <code>f</code> for the functor, <code>t</code> for the traversable. A reader of <code>traverse :: (a -&gt; m b) -&gt; t a -&gt; m (t b)</code> decodes nothing, because those letters are idioms with forty years of standing. But <code>ax</code>, <code>res</code>, <code>env</code>, <code>cfg</code> are neither convention nor description — each is a small private code the reader must crack from context, and the context is exactly what a type declaration exists to establish.</p>
+<p>Whatever the case for terseness in signatures a library threads through every function — and it is weaker than it used to be, now that code is written and read by tools that never tire of typing — there is no case at all where the variable appears twice. Use the word.</p>
 </section>
 <section id="sec-19">
 <h2><a href="#sec-19">XVIII. Testing</a></h2>
 <p>PureScript's type system catches many bugs at compile time, but not all. Property-based testing and law checking fill the gap, especially for the algebraic structures that type classes encode.</p>
-<h3 id="entry-177"><a href="#entry-177" class="entry-link"><span class="entry-num">177.</span></a> Write property-based tests, not just examples</h3>
+<h3 id="entry-178"><a href="#entry-178" class="entry-link"><span class="entry-num">178.</span></a> Write property-based tests, not just examples</h3>
 <p>An example test says "this input produces this output." A property test says "for all inputs satisfying these constraints, this relationship holds." The second finds bugs the first never will, because it explores inputs the author did not think to try.</p>
 <pre><code class="language-haskell">-- Property: tests the relationship for all generated users
 quickCheck \(user :: User) -&gt;
@@ -2754,7 +2767,7 @@ it "decodes what it encodes" do
   decode userCodec (encode userCodec user) `shouldEqual` Right user</code></pre>
 <p>The property version requires an <code>Arbitrary User</code> instance, which forces you to think about the space of valid inputs — itself a useful exercise. It then generates hundreds of random users, including edge cases (empty strings, boundary values, unusual characters) that a hand-written example would never include.</p>
 <p>Good candidates for property tests: codec roundtrips, monoid laws (<code>mempty &lt;&gt; x === x</code>), idempotency (<code>f (f x) === f x</code>), commutativity, and ordering consistency. These are universal relationships, and testing them universally is what property-based testing is for.</p>
-<h3 id="entry-178"><a href="#entry-178" class="entry-link"><span class="entry-num">178.</span></a> Test laws with purescript-quickcheck-laws</h3>
+<h3 id="entry-179"><a href="#entry-179" class="entry-link"><span class="entry-num">179.</span></a> Test laws with purescript-quickcheck-laws</h3>
 <p>If your type has instances for <code>Eq</code>, <code>Ord</code>, <code>Semigroup</code>, <code>Monoid</code>, <code>Functor</code>, or <code>Monad</code>, those instances carry algebraic laws. <code>Eq</code> must be reflexive, symmetric, and transitive. <code>Semigroup</code>'s <code>append</code> must be associative. <code>Monad</code> must satisfy left identity, right identity, and associativity.</p>
 <p>An instance that violates its laws is worse than no instance at all. Code that uses your type through the class interface assumes the laws hold. When they do not, the bugs are subtle, non-local, and maddening to track down.</p>
 <pre><code class="language-haskell">import Test.QuickCheck.Laws.Data.Eq (checkEq)
@@ -2966,7 +2979,7 @@ render = case _ of
 </main>
 
 <footer>
-  <p>178 entries · 20 sections · 14 De Gustibus</p>
+  <p>179 entries · 20 sections · 14 De Gustibus</p>
   <p>Draft — March 2026</p>
 </footer>
 

@@ -6,7 +6,7 @@ PureScript's type system catches many bugs at compile time, but not all. Propert
 ---
 
 
-## 177. Write property-based tests, not just examples
+## 178. Write property-based tests, not just examples
 
 An example test says "this input produces this output." A property test says "for all inputs satisfying these constraints, this relationship holds." The second finds bugs the first never will, because it explores inputs the author did not think to try.
 
@@ -29,7 +29,7 @@ Good candidates for property tests: codec roundtrips, monoid laws (`mempty <> x 
 ---
 
 
-## 178. Test laws with purescript-quickcheck-laws
+## 179. Test laws with purescript-quickcheck-laws
 
 If your type has instances for `Eq`, `Ord`, `Semigroup`, `Monoid`, `Functor`, or `Monad`, those instances carry algebraic laws. `Eq` must be reflexive, symmetric, and transitive. `Semigroup`'s `append` must be associative. `Monad` must satisfy left identity, right identity, and associativity.
 
