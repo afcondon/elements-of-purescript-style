@@ -6,7 +6,7 @@ Conventions that have no deep justification beyond consistency. Their value is t
 ---
 
 
-## 167. Order imports: Prelude, then libraries, then local modules
+## 168. Order imports: Prelude, then libraries, then local modules
 
 Three groups, separated by blank lines, alphabetical within each group.
 
@@ -30,7 +30,7 @@ Note: `purs-tidy` does not rearrange imports — it formats code structure but l
 ---
 
 
-## 168. Qualify container imports
+## 169. Qualify container imports
 
 `import Data.Map as Map` and write `Map.lookup`, `Map.insert`, `Map.empty` at every call site. The same for `Set`, `List`, `StrMap`, and any container whose operations have generic names.
 
@@ -53,7 +53,7 @@ items  = Set.insert item Set.empty
 ---
 
 
-## 169. Document every export with a doc comment
+## 170. Document every export with a doc comment
 
 PureScript doc comments (`-- |`) appear in generated documentation and in IDE hover popups. Every exported function and type should have one.
 
@@ -71,7 +71,7 @@ For internal helpers, a brief comment is still welcome but not obligatory — th
 ---
 
 
-## 170. Documentation describes what, not how
+## 171. Documentation describes what, not how
 
 "Returns the first element, or `Nothing` if empty." Not: "Pattern matches on the array, checks if the length is zero, then returns the head."
 
@@ -91,7 +91,7 @@ If you feel the need to explain the mechanism, that is often a signal that the f
 ---
 
 
-## 171. Use mixed case for abbreviations: HttpServer, not HTTPServer
+## 172. Use mixed case for abbreviations: HttpServer, not HTTPServer
 
 When an abbreviation appears in a CamelCase identifier, treat it as a word: `HttpServer`, `JsonParser`, `XmlNode`. The exception is two-letter abbreviations, which remain uppercase: `IO`, `Id`.
 
@@ -103,7 +103,7 @@ This convention follows the PureScript ecosystem's prevailing practice and align
 ---
 
 
-## 172. Use singular module names
+## 173. Use singular module names
 
 `Data.Map`, not `Data.Maps`. `MyApp.Route`, not `MyApp.Routes`. `Component.Sidebar`, not `Components.Sidebar`.
 
@@ -115,7 +115,7 @@ The plural form tempts when a module contains "many things" — many routes, man
 ---
 
 
-## 173. Do not mix let and where in the same definition
+## 174. Do not mix let and where in the same definition
 
 A definition that scatters bindings between `let` (above the main expression) and `where` (below it) forces the reader to look in two places to understand the function's vocabulary.
 
@@ -136,7 +136,7 @@ Pick one style per definition. Use `where` for named helpers that support the ma
 ---
 
 
-## 174. Name recursive helpers go or loop
+## 175. Name recursive helpers go or loop
 
 When a function uses an inner recursive helper with an accumulator, the conventional name is `go` (or sometimes `loop`). This is not a PureScript invention — it is established practice across Haskell, Scala, and the broader FP community.
 
@@ -156,7 +156,7 @@ The name `go` signals "this is the tail-recursive workhorse; the outer function 
 ---
 
 
-## 175. Do not shadow; the compiler warns for a reason
+## 176. Do not shadow; the compiler warns for a reason
 
 Shadowing — binding a new value with the same name as an existing binding in scope — is legal PureScript. The compiler warns about it. Heed the warning.
 
@@ -176,7 +176,7 @@ The fix is usually a better name: `formatted`, `userStr`, or whatever describes 
 ---
 
 
-## 176. Keep warnings under control
+## 177. Keep warnings under control
 
 The PureScript compiler's warnings are precise: unused imports, missing type signatures, shadowed names, redundant patterns, incomplete binds. Most identify code that is wrong, dead, or unclear.
 
@@ -198,7 +198,7 @@ That said, "zero warnings always" is a guideline, not a law. Shadowed name warni
 ---
 
 
-## 177. Spell out type variables that barely appear
+## 178. Spell out type variables that barely appear
 
 A type parameter that occurs only a handful of times in a declaration has no business being abbreviated. `data Why rule ax` saves three characters over `data Why rule axiom` and charges every reader a decode.
 

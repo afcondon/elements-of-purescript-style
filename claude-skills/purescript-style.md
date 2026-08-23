@@ -55,6 +55,13 @@ Over: `colorFor status = case status of Active -> ...`
 Prefer: `when (Array.null items) do log "empty"`
 Over: `if Array.null items then log "empty" else pure unit`
 
+**Use `for_`/`traverse_`, not a `case` on `Maybe`.**
+Prefer: `for_ mbSpec \spec -> fire spec`
+Over: `case mbSpec of Nothing -> pure unit; Just spec -> fire spec`
+`Maybe` is `Foldable`. Generalises: never take a structure apart to
+reproduce a combinator it already has — `case mb of Just x -> Just (f x);
+Nothing -> Nothing` is `map f mb`; unwrap-apply-rewrap of a newtype is `over`.
+
 **Use `<$>` when you only transform the result.**
 Prefer: `_.name <$> fetchUser id`
 Over: `do { u <- fetchUser id; pure u.name }`

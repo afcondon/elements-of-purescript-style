@@ -6,7 +6,7 @@ Records and modules are the primary tools for organising code. Records give stru
 ---
 
 
-## 89. Use records with named fields when three or more arguments share a type
+## 90. Use records with named fields when three or more arguments share a type
 
 When a function takes multiple arguments of the same type, the compiler cannot protect you from transposition. The caller can, if the arguments have names.
 
@@ -32,7 +32,7 @@ For even stronger protection, combine records with newtypes: `{ name :: Name, em
 ---
 
 
-## 90. Use row polymorphism instead of concrete record types in library APIs
+## 91. Use row polymorphism instead of concrete record types in library APIs
 
 PureScript's row polymorphism lets a function require specific fields without constraining the rest of the record. This is a feature worth using at module boundaries.
 
@@ -58,7 +58,7 @@ This matters most in libraries and shared modules where you cannot predict every
 ---
 
 
-## 91. Use record update syntax, not manual reconstruction
+## 92. Use record update syntax, not manual reconstruction
 
 When you need to change one or two fields of a record, use update syntax. Do not rebuild the entire record by hand.
 
@@ -87,13 +87,13 @@ setPersonPostcode :: PostCode -> Person -> Person
 setPersonPostcode pc p = p { address { postCode = pc } }
 ```
 
-In `do` blocks and Halogen handlers, combine this with the wildcard from entry 76: `H.modify_ _ { loading = true }`. One token for the record, one field updated, nothing else to read.
+In `do` blocks and Halogen handlers, combine this with the wildcard from entry 77: `H.modify_ _ { loading = true }`. One token for the record, one field updated, nothing else to read.
 
 
 ---
 
 
-## 92. Use _ for record updates in modify
+## 93. Use _ for record updates in modify
 
 When updating state in Halogen or any context that takes a record-update function, use the wildcard `_` instead of naming the record.
 
@@ -117,7 +117,7 @@ The record-update wildcard is PureScript-specific syntax. Newcomers often miss i
 ---
 
 
-## 93. Use _.field for record access in map
+## 94. Use _.field for record access in map
 
 When the body of a lambda is a single field access, use the accessor shorthand.
 
@@ -147,7 +147,7 @@ This would be `map (\user -> user.address.city) users` in the explicit form — 
 ---
 
 
-## 94. Use an explicit lambda when the body goes beyond field access
+## 95. Use an explicit lambda when the body goes beyond field access
 
 Accessor shorthand (`_.field`) is for field extraction. The moment the body involves computation, conditionals, or references to multiple fields, write a named lambda instead.
 
@@ -168,7 +168,7 @@ The boundary is usually self-evident. If the body is more than a dotted path, yo
 ---
 
 
-## 95. Skip the newtype when the record field name already provides context
+## 96. Skip the newtype when the record field name already provides context
 
 Entry 5 argues that newtypes are cheap and you should use them liberally. This is the necessary counterweight: not every value with an underlying type of `Boolean` or `String` needs a wrapper.
 
@@ -185,15 +185,15 @@ sendMessage :: UserId -> UserId -> MessageBody -> Aff Unit
 
 The test from entry 5 still applies: "would swapping this value with another value of the same underlying type be a bug?" A single named field in a record fails that test — there is nothing to swap it with. Newtypes solve the positional confusion problem; named fields solve it differently.
 
-See also entry 140 for the complementary case where the newtype is warranted.
+See also entry 141 for the complementary case where the newtype is warranted.
 
 
 ---
 
 
-## 96. Newtype everything that has different semantics from its base type
+## 97. Newtype everything that has different semantics from its base type
 
-This is the affirmative case for newtypes, complementing entry 139's restraint. When a `String` is not just a string — when it is a UUID, an email address, a file path, a CSS class name — wrap it. The newtype costs nothing at runtime and prevents an entire category of mixups at compile time.
+This is the affirmative case for newtypes, complementing entry 140's restraint. When a `String` is not just a string — when it is a UUID, an email address, a file path, a CSS class name — wrap it. The newtype costs nothing at runtime and prevents an entire category of mixups at compile time.
 
 ```purescript
 newtype EmailAddress = EmailAddress String
@@ -214,7 +214,7 @@ When uncertain, add the wrapper. The worst case is a few `coerce` or `unwrap` ca
 ---
 
 
-## 97. Extensible records for function arguments, closed records for domain models
+## 98. Extensible records for function arguments, closed records for domain models
 
 PureScript's row polymorphism lets you write functions that accept records with extra fields:
 
@@ -246,7 +246,7 @@ The extensible version forces every function that mentions `User` to carry and p
 ---
 
 
-## 98. Use explicit export lists
+## 99. Use explicit export lists
 
 A module without an export list exports everything: public API, internal helpers, partially-applied constructors, and any re-exports you did not intend. This is rarely what you want.
 
@@ -270,7 +270,7 @@ Export data constructors with `(..)` when callers need to pattern match. Export 
 ---
 
 
-## 99. Use explicit imports or qualified imports
+## 100. Use explicit imports or qualified imports
 
 When you read `head xs` in a module with `import Data.Array` and `import Data.List`, you cannot tell which `head` is being called without checking the types. When you read `Array.head xs`, you can.
 
@@ -298,7 +298,7 @@ The Prelude is the most common open import, and its contents (`map`, `bind`, `sh
 ---
 
 
-## 100. Separate data types from their operations
+## 101. Separate data types from their operations
 
 Define your ADTs and records in a `Types` module. Define operations in sibling modules that import `Types`.
 
@@ -317,7 +317,7 @@ Type definitions change less often than the functions that operate on them. Sepa
 ---
 
 
-## 101. Distinguish configuration from state
+## 102. Distinguish configuration from state
 
 Values that are set once at startup and never change — API base URLs, feature flags, locale, authentication tokens — belong in a `Reader` environment, not in mutable state.
 
@@ -339,7 +339,7 @@ Putting configuration in `State` invites accidental modification — a `modify_`
 ---
 
 
-## 102. Factor common fields out of ADT variants
+## 103. Factor common fields out of ADT variants
 
 If every constructor of a sum type carries the same field, that field belongs outside the sum.
 
@@ -367,7 +367,7 @@ The factored version makes the common structure visible in the type. You can wri
 ---
 
 
-## 103. Keep modules under approximately 400 lines
+## 104. Keep modules under approximately 400 lines
 
 A module that grows past this threshold is likely doing more than one thing. It accumulates responsibilities until no one can hold it in their head, and every change requires scrolling past unrelated code.
 
@@ -379,7 +379,7 @@ The number is not sacred — some modules are naturally larger (a component with
 ---
 
 
-## 104. Write helpers liberally; export sparingly
+## 105. Write helpers liberally; export sparingly
 
 Break complex functions into small, well-typed, unexported helpers. Each helper with a type signature is a checked assertion about an intermediate step — a waypoint where the compiler verifies your reasoning.
 
@@ -413,7 +413,7 @@ The cost of an unexported helper is near zero: a few lines of code that the comp
 ---
 
 
-## 105. Structure modules by capability and domain
+## 106. Structure modules by capability and domain
 
 As a PureScript application grows beyond a handful of modules, directory structure becomes load-bearing. The Real World Halogen project demonstrates a structure that has aged well:
 
@@ -432,13 +432,13 @@ This separates what the application *can do* (capabilities) from what it *is* (d
 
 The structure is not prescriptive for all applications. A compiler pass has different concerns than a web application. But the principle holds: group by responsibility, not by file type. Do not put all your types in `Types.purs` and all your functions in `Utils.purs`. (Thomas Honeyman)
 
-See also entry 165 for the capability pattern that gives the `Capability/` directory its purpose.
+See also entry 166 for the capability pattern that gives the `Capability/` directory its purpose.
 
 
 ---
 
 
-## 106. The capability pattern: type classes for effects, newtypes for implementations
+## 107. The capability pattern: type classes for effects, newtypes for implementations
 
 Define your application's side effects as type class methods. Implement them in a production newtype. Swap in test implementations.
 
@@ -473,13 +473,13 @@ deactivateUser uid = do
 
 In tests, provide a mock implementation that records calls without performing them. The business logic is tested without HTTP requests, database connections, or console output. (Thomas Honeyman)
 
-This is the `ReaderT` pattern from entry 149 taken to its logical conclusion: the monad abstraction separates business logic from effect plumbing entirely.
+This is the `ReaderT` pattern from entry 150 taken to its logical conclusion: the monad abstraction separates business logic from effect plumbing entirely.
 
 
 ---
 
 
-## 107. Follow namespace conventions: Data for data, Control for control, Node for Node.js
+## 108. Follow namespace conventions: Data for data, Control for control, Node for Node.js
 
 PureScript's module namespace conventions carry semantic weight. They tell the reader what category of abstraction a module provides before they open the file.
 

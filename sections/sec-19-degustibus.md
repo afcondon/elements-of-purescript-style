@@ -273,7 +273,7 @@ The case for aggressive splitting: small modules are easy to navigate, easy to t
 
 The case for conservative splitting: PureScript's orphan-instance rule requires that type class instances live in the module that defines either the class or the type. Splitting a type and its instances across modules is either impossible or requires restructuring. Aggressive splitting also produces deep import chains and can make it harder to understand a feature's full implementation.
 
-A practical heuristic from entry 134: keep modules under roughly 400 lines. This is loose enough to accommodate types with their instances and tight enough to prevent modules from becoming grab-bags. Split when a module has two unrelated responsibilities, not when it reaches an arbitrary line count.
+A practical heuristic from entry 135: keep modules under roughly 400 lines. This is loose enough to accommodate types with their instances and tight enough to prevent modules from becoming grab-bags. Split when a module has two unrelated responsibilities, not when it reaches an arbitrary line count.
 
 
 ---

@@ -6,7 +6,7 @@ The foreign function interface is where PureScript's guarantees end and the host
 ---
 
 
-## 53. Keep FFI files minimal; put logic in PureScript
+## 54. Keep FFI files minimal; put logic in PureScript
 
 A foreign module should do one thing: expose a host-language function to PureScript with an honest type. All branching, error handling, validation, and data transformation belong on the PureScript side, where the compiler can verify them.
 
@@ -34,7 +34,7 @@ That said, this advice assumes a project that has committed to PureScript for it
 ---
 
 
-## 54. Use EffectFn/Fn for uncurried FFI
+## 55. Use EffectFn/Fn for uncurried FFI
 
 PureScript functions are curried. JavaScript functions are not. When you call a JavaScript function that takes multiple arguments, or pass a PureScript callback to JavaScript, use `Fn` and `EffectFn` from `Data.Function.Uncurried` and `Effect.Uncurried` to match JavaScript's calling convention directly.
 
@@ -62,7 +62,7 @@ The uncurried variants avoid an intermediate currying wrapper in the JavaScript 
 ---
 
 
-## 55. Use Nullable for values that may be null
+## 56. Use Nullable for values that may be null
 
 JavaScript APIs routinely return `null` or `undefined`. Rather than pretending the value will always be there (and crashing at runtime), use `Nullable` from `Data.Nullable` to make the possibility explicit at the FFI boundary.
 
@@ -75,13 +75,13 @@ getElementById id = toMaybe <$> getElementByIdImpl id
 
 `Nullable` exists specifically for this: it maps directly to JavaScript's null/undefined semantics and converts cleanly to `Maybe` via `toMaybe`. It is the right tool for single values that might be absent. Do not use `Foreign` decoding when `Nullable` suffices — the lighter tool communicates the simpler situation.
 
-For richer structures coming across the boundary, see entry 56.
+For richer structures coming across the boundary, see entry 57.
 
 
 ---
 
 
-## 56. Parse, don't validate — especially at the boundary
+## 57. Parse, don't validate — especially at the boundary
 
 Any data arriving from outside your program — JSON from an API, query parameters from a URL, configuration from a file, a return value from a JavaScript function — should be *parsed* into a typed representation at the boundary and never trusted as raw input beyond that point. This is what Alexis King calls "parse, don't validate": do not check that the data looks right and then use it unsafely — transform it into a type that *cannot* be wrong.
 
@@ -109,7 +109,7 @@ The `Foreign` decoder is a parser. Once it succeeds, the result is a genuine Pur
 ---
 
 
-## 57. Never use unsafeCoerce as a substitute for proper types
+## 58. Never use unsafeCoerce as a substitute for proper types
 
 `Unsafe.Coerce.unsafeCoerce` tells the compiler "trust me, this value has this type." The compiler obliges. It has no choice. When you are wrong — and you will eventually be wrong — the error surfaces at runtime, far from the coercion, with no indication of what went awry.
 
@@ -137,7 +137,7 @@ In a production codebase, consider adding a pre-commit check or CI step that fla
 ---
 
 
-## 58. Suffix foreign imports with Impl; hide them behind a wrapper
+## 59. Suffix foreign imports with Impl; hide them behind a wrapper
 
 The boundary between JavaScript and PureScript is the most dangerous line in your codebase. Mark it clearly.
 
@@ -167,7 +167,7 @@ See also entries 153 and 154 for related FFI discipline.
 ---
 
 
-## 59. Do not go point-free with runFn
+## 60. Do not go point-free with runFn
 
 The PureScript compiler inlines `runFn2`, `runFn3`, and their siblings only when they are fully saturated — applied to all their arguments. A point-free definition defeats this optimisation.
 
@@ -189,7 +189,7 @@ This is one of the few places where the general De Gustibus tolerance for point-
 ---
 
 
-## 60. Do not mutate input records in FFI code
+## 61. Do not mutate input records in FFI code
 
 JavaScript FFI functions receive PureScript values directly. If a foreign function modifies its arguments in place, it violates the fundamental contract of a pure language: that values do not change after construction.
 
@@ -216,7 +216,7 @@ This applies to arrays, typed arrays, and any mutable JavaScript object. If your
 ---
 
 
-## 61. Never call PureScript code from foreign modules
+## 62. Never call PureScript code from foreign modules
 
 Do not import PureScript-generated modules in your JavaScript FFI files. Do not reference constructors like `Data_Maybe.Just.create(x)` or call functions from the `output/` directory.
 
@@ -255,7 +255,7 @@ You can also pass PureScript functions as callbacks to JavaScript. An `EffectFn1
 ---
 
 
-## 62. Pass type class methods, not dictionaries, to FFI
+## 63. Pass type class methods, not dictionaries, to FFI
 
 When a foreign function needs to use a type class method — `show`, `compare`, `encode` — pass the resolved method as a function argument. Do not attempt to work with dictionary objects in JavaScript.
 
@@ -280,7 +280,7 @@ The PureScript compiler resolves type class instances to dictionary objects with
 ---
 
 
-## 63. Remember that Effect values are thunks
+## 64. Remember that Effect values are thunks
 
 In PureScript, an `Effect` value is a function of zero arguments — a thunk. The foreign module must wrap side effects in a function to defer their execution until PureScript's runtime invokes them.
 
@@ -315,7 +315,7 @@ The outermost functions receive the curried arguments. The innermost `function()
 ---
 
 
-## 64. Do not use unsafePerformEffect in production code
+## 65. Do not use unsafePerformEffect in production code
 
 `unsafePerformEffect` executes an `Effect` and returns a "pure" value. It is the most dangerous function in the PureScript ecosystem, and its dangers are not obvious.
 
@@ -336,7 +336,7 @@ The only defensible use is as a transitional step during FFI prototyping — and
 ---
 
 
-## 65. Declare type roles explicitly for foreign data and mutable newtypes
+## 66. Declare type roles explicitly for foreign data and mutable newtypes
 
 PureScript's `coerce` function can convert between types that differ only in newtype wrappers — but only when the type roles permit it. The compiler infers roles, but inference can be too permissive for types that wrap mutable state or foreign data.
 

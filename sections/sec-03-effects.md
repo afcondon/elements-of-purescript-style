@@ -108,7 +108,40 @@ Note that `when` requires only an `Applicative` constraint, not `Monad` — so i
 ---
 
 
-## 34. Sometimes map will do
+## 34. Use for_ and traverse_, not a case on Maybe
+
+The previous entry has a sibling that is easier to miss. When one branch of a `case` runs an effect and the other produces `pure unit`, you have written `for_` by hand.
+
+Prefer:
+
+```purescript
+for_ store.machine \spec ->
+  fire (wiring spec) pressed
+```
+
+Over:
+
+```purescript
+case store.machine of
+  Nothing -> pure unit
+  Just spec -> fire (wiring spec) pressed
+```
+
+`Maybe` is `Foldable` — a container of nought or one — so `for_` runs the effect for each element it has, which is exactly the intent. The `case` version takes four lines to say it, and makes the reader stop and confirm that the `Nothing` branch really is inert before they can move on. It also invites a mistake the `for_` version cannot make: once there is a branch there, something eventually gets put in it.
+
+The habit generalises past `Maybe`. `for_` and `traverse_` work over any `Foldable`, so the same two lines cover *do this if the value is there*, *do this for each of them*, and *do this unless it failed*, with nothing changed but the argument. The two differ only in argument order: `traverse_ f xs` reads as a pipeline and `for_ xs \x -> ...` reads as a loop, so reach for the second when the body runs to more than one line.
+
+The general habit is the one worth naming, because it wears many faces:
+
+> **Do not take a structure apart to reproduce a combinator that already exists for it.**
+
+`case mb of Just x -> Just (f x); Nothing -> Nothing` is `map f mb`. `case e of Left err -> Left err; Right a -> Right (g a)` is `map g e`. Unwrapping a newtype, applying a function, and wrapping it up again is `over`. Each is a handful of lines that say nothing, and each buries the intent under the mechanics of unpacking. The reader has to reconstruct the combinator in their head to find out that nothing else was going on.
+
+
+---
+
+
+## 35. Sometimes map will do
 
 A `do` block that binds a value and immediately wraps a transformation of it in `pure` is a `Functor` operation wearing `Monad` clothing.
 
@@ -134,7 +167,7 @@ The same principle extends to longer chains. If you find yourself writing `do { 
 ---
 
 
-## 35. Understand Apply vs Bind and choose deliberately
+## 36. Understand Apply vs Bind and choose deliberately
 
 PureScript gives you a choice that most languages do not. `Bind` (and `do` notation) sequences computations where each step may depend on the result of the previous one. `Apply` (and `ado` notation) combines computations that are independent.
 
@@ -164,7 +197,7 @@ Use `do` when there is a genuine dependency -- when the URL you fetch in step tw
 ---
 
 
-## 36. ado notation: powerful but know the sharp edges
+## 37. ado notation: powerful but know the sharp edges
 
 The previous entry introduced the Apply/Bind distinction. `ado` (applicative do) is the syntax for the Apply side — it desugars to `Apply` rather than `Bind`, which means the computations are independent. In `Aff`, this enables concurrency. In `Maybe` and `Either`, it documents independence. In `Validation`, it is the only option (there is no `Monad` instance).
 
@@ -193,7 +226,7 @@ For experienced programmers, `ado` is a precise tool. For codebases with mixed e
 ---
 
 
-## 37. Applicative for building, Monad for deciding
+## 38. Applicative for building, Monad for deciding
 
 If every part of a computation can proceed independently, use `Applicative` (or `ado` notation). If the next step depends on the result of the previous one, you need `Monad`.
 
@@ -222,7 +255,7 @@ When you reach for `do` notation, ask whether each bind genuinely depends on a p
 ---
 
 
-## 38. Attach a Canceler to every makeAff
+## 39. Attach a Canceler to every makeAff
 
 Every `makeAff` must return a `Canceler`. This is not a suggestion from the type system — it is a requirement. But the compiler only checks that you return *a* `Canceler`, not that it does anything useful. The responsibility for meaningful cancellation is yours.
 
@@ -248,7 +281,7 @@ Forgetting the canceler — or always returning `nonCanceler` out of habit — m
 ---
 
 
-## 39. Use parallel/sequential for concurrent Aff
+## 40. Use parallel/sequential for concurrent Aff
 
 When two asynchronous operations do not depend on each other, run them concurrently. PureScript provides two mechanisms: the `parallel`/`sequential` combinators (and their convenience wrappers `parTraverse`, `parSequence`) and manual fiber management (`forkAff`/`joinFiber`). Prefer the first.
 
@@ -285,7 +318,7 @@ The parallel combinators express the *structure* of the concurrency — these th
 ---
 
 
-## 40. parTraverse and parSequence cover 80% of parallel Aff
+## 41. parTraverse and parSequence cover 80% of parallel Aff
 
 PureScript's `Aff` monad provides parallel combinators through the `Parallel` type class. For most use cases, two functions are sufficient:
 
@@ -307,7 +340,7 @@ For bounded concurrency — running at most N requests simultaneously — use an
 ---
 
 
-## 41. Use STRef with ST.run for locally-scoped mutation
+## 42. Use STRef with ST.run for locally-scoped mutation
 
 It might surprise you to learn that PureScript has an escape hatch for mutation — but it should not surprise you to learn that it is a very principled and precise one. When an algorithm needs mutable state for performance — building an array in a loop, accumulating into a hash map, running an in-place sort — `ST` gives you mutation with a pure interface.
 
@@ -333,7 +366,7 @@ There is a larger lesson here. It is not the case that a purely functional langu
 ---
 
 
-## 42. Prefer Ref only at application boundaries
+## 43. Prefer Ref only at application boundaries
 
 `Effect.Ref` is mutable state in `Effect`. It is the right tool for state shared between independent event handlers -- a WebSocket connection pool, a cache that outlives a single request, a counter incremented by callbacks from different sources.
 
@@ -368,7 +401,7 @@ Reserve `Ref` for genuinely shared, long-lived mutable state at the edges of you
 ---
 
 
-## 43. Use newtypes for monad transformer stacks
+## 44. Use newtypes for monad transformer stacks
 
 A type alias for a transformer stack is transparent — every function that uses it must be compatible with the fully expanded type, and error messages show the expanded form.
 
@@ -402,7 +435,7 @@ The newtype also gives you a place to hang custom instances. If `AppM` needs a `
 ---
 
 
-## 44. Prefer polymorphic monad constraints over concrete Effect
+## 45. Prefer polymorphic monad constraints over concrete Effect
 
 When a function performs effects, writing its type with a concrete `Effect` monad locks it into a specific execution context. Writing it with a constraint leaves room for the future.
 
@@ -424,7 +457,7 @@ This does not mean every function should carry monad constraints. Pure functions
 ---
 
 
-## 45. A transformer stack is only as stack-safe as its base
+## 46. A transformer stack is only as stack-safe as its base
 
 If your monad transformer stack bottoms out in `Identity`, your `bind` chains are not stack-safe. Each `>>=` adds a frame, and deep recursion will overflow.
 

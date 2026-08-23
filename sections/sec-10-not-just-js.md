@@ -6,7 +6,7 @@ The JavaScript backend is the most mature and widely used, but PureScript also t
 ---
 
 
-## 122. Note runtime environment assumptions in your README
+## 123. Note runtime environment assumptions in your README
 
 A PureScript library that calls `process.argv` will fail silently in the browser. A library that calls `document.querySelector` will crash in Node. These are not type errors — the compiler cannot catch them.
 
@@ -26,7 +26,7 @@ A consumer who installs your library for the wrong platform gets cryptic FFI err
 ---
 
 
-## 123. PureScript is industrially focused, not a PL research vehicle
+## 124. PureScript is industrially focused, not a PL research vehicle
 
 PureScript is a language designed for building software, not for exploring the frontiers of type theory. This is a deliberate choice with practical consequences.
 

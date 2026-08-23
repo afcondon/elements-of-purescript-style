@@ -6,7 +6,7 @@ Type classes in PureScript are not interfaces, not abstract classes, not traits.
 ---
 
 
-## 66. ADTs for variants, type classes for ad hoc polymorphism
+## 67. ADTs for variants, type classes for ad hoc polymorphism
 
 Type classes are PureScript's mechanism for *ad hoc polymorphism* — giving the same operation different behaviour for different types, within a framework of laws. `Eq` means "this type supports equality, and it is reflexive, symmetric, and transitive." `Monoid` means "this type has an associative binary operation with an identity element." The laws are the point; convenience is a side effect.
 
@@ -37,7 +37,7 @@ A useful heuristic: if you are writing a class with one method and three instanc
 ---
 
 
-## 67. Use newtypes to avoid orphan instance errors
+## 68. Use newtypes to avoid orphan instance errors
 
 PureScript enforces a strict rule: a type class instance must be defined in the module that defines the class or in the module that defines the type. Defining it anywhere else is an orphan instance, and the compiler rejects it outright.
 
@@ -65,7 +65,7 @@ The restriction exists to prevent incoherence — the situation where two module
 ---
 
 
-## 68. There are no default method implementations
+## 69. There are no default method implementations
 
 In Haskell, a type class can provide default implementations for some methods in terms of others. You might define only `fmap` and get `<$` for free. PureScript does not have this feature. Every method in every instance must be written.
 
@@ -84,7 +84,7 @@ This is a deliberate design choice — it keeps the instance resolution machiner
 ---
 
 
-## 69. Give instances for containers you define
+## 70. Give instances for containers you define
 
 If you define a data structure that holds values, give it `Functor`, `Foldable`, and `Traversable` instances. Without them, every consumer must destructure your type manually, and it cannot participate in generic algorithms.
 
@@ -111,7 +111,7 @@ More broadly: you will get terrific return on your investment from using existin
 ---
 
 
-## 70. Write functions over Foldable, not concrete containers
+## 71. Write functions over Foldable, not concrete containers
 
 When a function folds, traverses, or checks membership, constrain it with `Foldable` or `Traversable` rather than naming a specific container. The function works the same; the caller is free to supply whichever collection they have.
 
@@ -135,7 +135,7 @@ The Haskell habit of defaulting to `[]` (a cons list) and optimising later does 
 ---
 
 
-## 71. Use Traversable to combine effects over structures
+## 72. Use Traversable to combine effects over structures
 
 `Traversable` generalises "do something effectful to each element and collect the results." If you find yourself pattern-matching on a container just to map an effectful function and reassemble, you are re-implementing `traverse`.
 
@@ -157,7 +157,7 @@ The key insight: `Traversable` is to effectful operations what `Functor` is to p
 ---
 
 
-## 72. Minimise type class constraints
+## 73. Minimise type class constraints
 
 Do not constrain a function with `Eq a =>` if the implementation never compares values of type `a`. Unnecessary constraints exclude valid call sites and misrepresent the function's actual requirements.
 
@@ -183,7 +183,7 @@ The compiler does not warn about over-constrained functions. Discipline here is 
 ---
 
 
-## 73. Do not use Show for serialisation
+## 74. Do not use Show for serialisation
 
 `Show` is for debugging. Its output format is not stable across compiler versions, not specified by any standard, and not guaranteed to be parseable. A `Show` instance is a convenience for the REPL and for log messages during development. It is not a serialisation format.
 
@@ -209,7 +209,7 @@ The temptation is strongest with simple types — `show myEnum` produces somethi
 ---
 
 
-## 74. Semigroup instances should compose, not silently discard
+## 75. Semigroup instances should compose, not silently discard
 
 The `Semigroup` instance for `Map` was the subject of considerable community debate. The question: when two maps share a key, should `append` keep the left value, the right value, or merge the values using the inner type's `Semigroup`?
 
@@ -241,7 +241,7 @@ The `First` and `Last` newtypes document the bias at the type level. A reader en
 ---
 
 
-## 75. Avoid stringly-typed Symbol proxies when an ADT exists
+## 76. Avoid stringly-typed Symbol proxies when an ADT exists
 
 Type-level strings (`Proxy @"foo"`, `SProxy "bar"`) are the foundation of PureScript's row polymorphism and generic programming. They are the right tool when you are writing generic code that operates over arbitrary record fields or variant labels.
 

@@ -6,7 +6,7 @@ PureScript's standard library provides a small, well-designed set of containers 
 ---
 
 
-## 76. Traverse; do not map and sequence
+## 77. Traverse; do not map and sequence
 
 When you need to apply an effectful function to every element of a structure, use `traverse`. Do not `map` the function over the structure and then `sequence` the result.
 
@@ -37,7 +37,7 @@ for items \item ->
 ---
 
 
-## 77. Discard results deliberately
+## 78. Discard results deliberately
 
 When you traverse for effect alone, use `traverse_` or `for_`.
 
@@ -59,7 +59,7 @@ The same applies throughout the standard libraries. Prefer `when` over `void $ i
 ---
 
 
-## 78. Use foldMap instead of map followed by fold
+## 79. Use foldMap instead of map followed by fold
 
 When you need to transform each element and then combine the results under a `Monoid`, `foldMap` does both in a single pass.
 
@@ -79,7 +79,7 @@ renderNames = fold <<< map (\u -> u.name <> "\n")
 ---
 
 
-## 79. Use Data.Map and Data.Set, not hand-rolled lookups
+## 80. Use Data.Map and Data.Set, not hand-rolled lookups
 
 If you find yourself writing `findFirst (\x -> x.id == target) items` or manually deduplicating with `nub`, step back. The `ordered-collections` package provides `Map` and `Set` with proper logarithmic-time operations.
 
@@ -106,7 +106,7 @@ The same principle applies to other container types. If your data is a tree, use
 ---
 
 
-## 80. Use coerce for zero-cost newtype conversions
+## 81. Use coerce for zero-cost newtype conversions
 
 You may be surprised to learn that PureScript has a `coerce` function (not `unsafeCoerce` — the safe kind). How can that be? Because newtypes are erased at runtime, and `coerce` simply tells the compiler "these two types have the same runtime representation — trust me, and check." The compiler does check, and it is O(1).
 
@@ -135,11 +135,11 @@ The constraint is that the newtype constructor must be in scope — if a module 
 ---
 
 
-## 81. But what if you don't want two newtypes to be coercible?
+## 82. But what if you don't want two newtypes to be coercible?
 
 The previous entry explains how `coerce` works. But sometimes you want to *prevent* coercion — for example, when a newtype wraps mutable state and converting between them would be unsound.
 
-This is what type roles are for. See entry 65 in the FFI section for the full treatment. The short version: if you declare `type role MutableRef nominal`, then `coerce :: MutableRef Int -> MutableRef String` becomes a type error. The `nominal` role says "these type parameters are significant, not just representational wrappers."
+This is what type roles are for. See entry 66 in the FFI section for the full treatment. The short version: if you declare `type role MutableRef nominal`, then `coerce :: MutableRef Int -> MutableRef String` becomes a type error. The `nominal` role says "these type parameters are significant, not just representational wrappers."
 
 If you write a newtype that enforces an invariant via a smart constructor (entry 8), you probably want its role to be `nominal` too — otherwise `coerce` can bypass your smart constructor from any module that has the newtype constructor in scope.
 
@@ -147,7 +147,7 @@ If you write a newtype that enforces an invariant via a smart constructor (entry
 ---
 
 
-## 82. Use Data.Newtype.un, over, and over2
+## 83. Use Data.Newtype.un, over, and over2
 
 The `Newtype` class provides generic functions for working with newtypes without importing or mentioning the constructor. This keeps code resilient to refactoring and avoids unnecessary coupling to a type's internal structure.
 
@@ -185,7 +185,7 @@ For collections, this matters more: `map (over Score (_ + 1)) scores` reads as a
 ---
 
 
-## 83. Use intercalate, not manual separator logic
+## 84. Use intercalate, not manual separator logic
 
 Building a delimited string by folding with a conditional separator is a recurring source of off-by-one errors: an extra comma at the end, a missing comma at the start, special-casing the first or last element.
 
@@ -211,7 +211,7 @@ foldlWithIndex
 ---
 
 
-## 84. Use Tuple only for ephemeral pairs
+## 85. Use Tuple only for ephemeral pairs
 
 `Tuple String Int` tells the reader nothing about which string or which int. It is a pair without identity — suitable for the intermediate steps of a pipeline, but not for data that persists, crosses a function boundary, or appears in a type signature that others must read.
 
@@ -234,7 +234,7 @@ A useful heuristic: if you would name the components when explaining the code al
 ---
 
 
-## 85. Use comparing for custom sort and comparison
+## 86. Use comparing for custom sort and comparison
 
 `Data.Ord.comparing` exists to eliminate the boilerplate of writing comparison lambdas.
 
@@ -262,7 +262,7 @@ This sorts by last name first, breaking ties with first name — expressed as a 
 ---
 
 
-## 86. join <$> traverse is idiomatic
+## 87. join <$> traverse is idiomatic
 
 You have a function that returns a nested container — say, each node's children as an array — and you want to traverse a structure with it and flatten the result into a single container. There is no standard combinator for "traverse then flatten," but the idiom `join <$> traverse` does exactly this.
 
@@ -295,7 +295,7 @@ Recognise this pattern when you see it. It is the monadic generalisation of `con
 ---
 
 
-## 87. Understand the PureScript String
+## 88. Understand the PureScript String
 
 PureScript's `String` is a JavaScript string. It is UTF-16 encoded, not a linked list of characters (Haskell's `String`), not a byte array (Rust's `&str`), and not a sequence of Unicode code points (Python 3's `str`).
 
@@ -323,7 +323,7 @@ Know which module you are importing. The functions have the same names.
 ---
 
 
-## 88. Why does Data.String.contains need Pattern?
+## 89. Why does Data.String.contains need Pattern?
 
 If you are new to PureScript, you may wonder why `contains` does not just take two strings:
 

@@ -2,7 +2,7 @@
 
 **[Read the guide](https://afcondon.github.io/elements-of-purescript-style/)**
 
-179 entries in 18 sections + 14 De Gustibus.
+180 entries in 18 sections + 14 De Gustibus.
 
 ---
 
@@ -18,7 +18,7 @@ The tone is somewhat AI-ish, I know, but it can be re-written if that's overwhel
 
 The `claude-skills/` directory contains two companion files for use with [Claude Code](https://docs.anthropic.com/en/docs/claude-code) or any LLM that takes system instructions:
 
-- **`purescript-style.md`** — ~40 terse rules distilled from the 178 entries. Load this *before* writing PureScript to shape code generation toward idiomatic patterns. Copy it to `~/.claude/commands/purescript-style.md` to use as `/purescript-style`.
+- **`purescript-style.md`** — ~40 terse rules distilled from the 180 entries. Load this *before* writing PureScript to shape code generation toward idiomatic patterns. Copy it to `~/.claude/commands/purescript-style.md` to use as `/purescript-style`.
 
 - **`fp-police.md`** — a code audit tool that searches an existing codebase for violations of these same rules (unsafe operations, FFI discipline, code smells, style). Run this *after* writing code to catch what slipped through. Copy it to `~/.claude/commands/fp-police.md` to use as `/fp-police`.
 

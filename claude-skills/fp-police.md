@@ -94,6 +94,16 @@ Glob: **/*.purs
 ```
 Should be `when` or `unless`.
 
+**B3a. Nothing -> pure unit (STYLE)**
+```
+Pattern: "Nothing\s*->\s*pure unit|Just \w+ ->[\s\S]{0,80}Nothing\s*->\s*pure unit"
+Glob: **/*.purs
+```
+Should be `for_` or `traverse_`. `Maybe` is `Foldable`; a `case` whose
+inert branch is `pure unit` is `for_` written by hand. Check the sibling
+smells too: `Just x -> Just (f x)` is `map f`, and unwrap-apply-rewrap of
+a newtype is `over`.
+
 **B4. Show used for serialization (WARNING)**
 ```
 Pattern: "show.*writeFile|show.*stringify|show.*encode|writeFile.*show"
@@ -244,6 +254,9 @@ fromJust|unsafeIndex
 
 # Style: else pure unit
 else\s+pure\s+unit
+
+# Style: case on Maybe that should be for_
+Nothing\s*->\s*pure unit
 
 # Internal imports
 import.*\.Internal\.

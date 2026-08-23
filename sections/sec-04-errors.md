@@ -6,7 +6,7 @@ There are two kinds of failure: the kind your program expects and the kind it do
 ---
 
 
-## 46. Either short-circuits; know when that is what you want
+## 47. Either short-circuits; know when that is what you want
 
 `Either`'s `Bind` instance stops at the first `Left`. Each step sees the result of the previous one, and if any step fails, the rest never runs. This is exactly right for sequencing dependent operations.
 
@@ -21,13 +21,13 @@ processOrder input = do
 
 Each step genuinely depends on the previous one — you cannot validate the address without the user, and you cannot bill without both. `Either`'s short-circuiting is the correct behaviour here: there is nothing useful to do after a failure.
 
-The mistake is reaching for `Either` when the checks are *independent* — see entry 47.
+The mistake is reaching for `Either` when the checks are *independent* — see entry 48.
 
 
 ---
 
 
-## 47. Use V (Validation) to accumulate independent errors
+## 48. Use V (Validation) to accumulate independent errors
 
 When checks do not depend on each other, `Either`'s short-circuiting is a disservice. A form with five bad fields should report all five, not make the user fix them one at a time.
 
@@ -52,7 +52,7 @@ With `Either`, this `ado` block would yield only the first failure. With `V`, al
 ---
 
 
-## 48. Use ExceptT for expected failures, Aff's error for unexpected ones
+## 49. Use ExceptT for expected failures, Aff's error for unexpected ones
 
 `Aff` has a built-in error channel that carries JavaScript `Error` values. This is the right place for failures that indicate something has gone genuinely wrong -- a network socket closed, a file could not be read, memory was exhausted. These are not part of your domain; they are part of the runtime's.
 
@@ -75,7 +75,7 @@ The separation pays off at the call site. An `Aff` error means something unexpec
 ---
 
 
-## 49. Do not catch exceptions you cannot handle
+## 50. Do not catch exceptions you cannot handle
 
 `try` converts an exception into an `Either`. This is useful when you have a meaningful response to the failure -- a fallback value, an alternative code path, a user-facing message. It is not useful when you intend to re-throw, log and crash, or immediately `fromRight`.
 
@@ -95,7 +95,7 @@ Catch an exception when you can do something about it: retry, fall back, degrade
 ---
 
 
-## 50. Avoid dual error channels: do not return Effect (Either e a)
+## 51. Avoid dual error channels: do not return Effect (Either e a)
 
 When a function returns `Effect (Either AppError a)`, it has two ways to fail: the `Effect` can throw a JavaScript exception, and the `Either` can be `Left`. The caller must handle both, and inevitably one channel is forgotten.
 
@@ -130,7 +130,7 @@ Either approach gives you one error channel. The `Effect (Either e a)` pattern g
 ---
 
 
-## 51. Use unsafeCrashWith for genuinely unreachable code
+## 52. Use unsafeCrashWith for genuinely unreachable code
 
 Sometimes the type system cannot prove that a branch is unreachable, but you know it is. Perhaps you have established the invariant elsewhere, or the surrounding logic excludes the case. Mark these branches explicitly with `unsafeCrashWith`.
 
@@ -151,7 +151,7 @@ Use this sparingly. Every `unsafeCrashWith` is a claim that the type system cann
 ---
 
 
-## 52. Alt and Alternative: first success wins
+## 53. Alt and Alternative: first success wins
 
 The `<|>` operator tries the left side; if it fails (produces `Nothing`, an empty array, a parse failure), it tries the right. This works for any type with an `Alt` instance, and it is the natural way to express fallback chains.
 

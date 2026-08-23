@@ -6,7 +6,7 @@ Concrete guidance for common programming tasks. Each entry recommends a specific
 ---
 
 
-## 159. Generating random values: use Effect.Random, not unsafePerformEffect
+## 160. Generating random values: use Effect.Random, not unsafePerformEffect
 
 Random number generation is an effect. It reads from a source of entropy, which is external state by definition. Wrapping it in `unsafePerformEffect` to get a "pure" random value is not pure — it is a lie that the compiler cannot detect but your program's behaviour will eventually reveal.
 
@@ -30,7 +30,7 @@ Use `Effect.Random` for one-off random values in effectful code. Use `MonadGen` 
 ---
 
 
-## 160. CLI argument parsing: use optparse, not hand-rolled case matching on argv
+## 161. CLI argument parsing: use optparse, not hand-rolled case matching on argv
 
 `purescript-optparse` gives you typed argument parsing with help text generation, subcommands, default values, and validation — all derived from a declarative description of your interface.
 
@@ -59,7 +59,7 @@ Even for tools with only one or two arguments, the structured approach costs les
 ---
 
 
-## 161. Date and time: use the types, not epoch integers
+## 162. Date and time: use the types, not epoch integers
 
 Passing `Int` or `Number` for timestamps invites an entire category of arithmetic errors: milliseconds versus seconds, timezone-unaware subtraction, comparing instants with durations.
 
@@ -84,7 +84,7 @@ Convert to and from epoch integers at the boundary: when reading from a database
 ---
 
 
-## 162. Regular expressions: compile once, use many
+## 163. Regular expressions: compile once, use many
 
 `Regex.regex` returns `Either String Regex` because the pattern string might be syntactically invalid. This is a check that needs to happen once, not on every use.
 
@@ -112,7 +112,7 @@ Compiling a regex is not expensive in absolute terms, but doing it inside a tigh
 ---
 
 
-## 163. HTTP requests: decode the response, do not assume its shape
+## 164. HTTP requests: decode the response, do not assume its shape
 
 An HTTP response body is a `String` or an `ArrayBuffer`. It is not your domain type. The gap between the wire format and your types is where every integration bug lives, and a codec is the firewall.
 
@@ -140,7 +140,7 @@ A pragmatic exception: if you are on a JavaScript backend and receiving very lar
 ---
 
 
-## 164. File I/O in Node: use the Aff wrappers, not raw FFI
+## 165. File I/O in Node: use the Aff wrappers, not raw FFI
 
 `purescript-node-fs-aff` wraps Node's `fs` module with `Aff`-based functions that handle callbacks, errors, and cancellation correctly. Using the callback-based FFI directly means reimplementing all of this by hand.
 
@@ -162,7 +162,7 @@ The same principle applies to any Node API that uses callbacks. If an `Aff` wrap
 ---
 
 
-## 165. Logging: use structured data, not string concatenation
+## 166. Logging: use structured data, not string concatenation
 
 String-concatenated log messages are easy to write and hard to use. They cannot be filtered, queried, or parsed reliably. They embed formatting decisions at every call site, making global changes to log format impossible.
 
@@ -190,7 +190,7 @@ Structured logging also makes the logging surface greppable in the source code. 
 ---
 
 
-## 166. Environment variables: read at startup, not on demand
+## 167. Environment variables: read at startup, not on demand
 
 Do not sprinkle `lookupEnv` calls throughout your codebase. Each one is an implicit dependency on external state — invisible in the type signature, untestable without modifying the environment, and discovered only at the moment of execution.
 

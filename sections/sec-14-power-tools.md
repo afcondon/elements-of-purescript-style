@@ -6,7 +6,7 @@ PureScript offers type-level programming, extensible effects, and generic progra
 ---
 
 
-## 149. Do not reproduce a lax type system with powerful tools
+## 150. Do not reproduce a lax type system with powerful tools
 
 Do not be seduced into reproducing a more lax type system with PureScript's powerful tools. `Variant`, `RowList`, and heterogeneous record machinery are genuine capabilities, but the temptation is to reach for them to build the kind of loose, dynamic-feeling structures familiar from less precise languages — open unions where a closed sum type would do, generic record traversals where three concrete functions would suffice.
 
@@ -49,7 +49,7 @@ In both cases, the defining characteristic is that the set of cases is genuinely
 ---
 
 
-## 150. Use type-level code for what only type-level code can do
+## 151. Use type-level code for what only type-level code can do
 
 Type-level programming in PureScript — `Symbol`, `RowList`, type-class-level computation with functional dependencies — is a real capability, not a party trick. Libraries like `simple-json` and `routing-duplex` use it to derive codecs and parsers from types alone, eliminating entire categories of boilerplate.
 
@@ -76,7 +76,7 @@ Reserve type-level machinery for guarantees that must hold at compile time and c
 ---
 
 
-## 151. Match the abstraction to the problem (Run, free monads, extensible effects)
+## 152. Match the abstraction to the problem (Run, free monads, extensible effects)
 
 `Run` is an extensible effects system built on free monads over variant rows. It lets you define effects as data types, compose them as row-polymorphic unions, and swap interpreters without changing business logic. If you have read the literature on algebraic effects or used `Eff` in Haskell's `freer-simple` or `polysemy`, the idea is familiar.
 
@@ -100,11 +100,11 @@ Match the abstraction to the problem. If you are not swapping interpreters, you 
 ---
 
 
-## 152. Never use unsafeCoerce to hide types; use the CPS existential pattern
+## 153. Never use unsafeCoerce to hide types; use the CPS existential pattern
 
 When you need to store values of different types in a collection, or pass a value whose concrete type the consumer need not know, the temptation is to reach for `unsafeCoerce` or `Foreign` to erase the type and cast it back later. This is unsafe in the precise sense that the compiler cannot check it — a refactor that changes the hidden type will compile successfully and crash at runtime.
 
-The safe alternative is the continuation-passing style (CPS) existential encoding described in entry 118. To recap the pattern briefly:
+The safe alternative is the continuation-passing style (CPS) existential encoding described in entry 119. To recap the pattern briefly:
 
 ```purescript
 -- Hide a concrete type behind a constraint.
@@ -122,13 +122,13 @@ The consumer provides a function that works for *any* type satisfying `Show`, an
 
 The alternative — `unsafeCoerce`-ing to `Foreign` and casting back — is the kind of code that works until someone changes the hidden type. The CPS encoding makes that same change a compile error, which is where you want to discover it.
 
-If the rank-2 types feel unfamiliar, invest the time to understand entry 118's explanation. The pattern appears throughout the ecosystem, and it is the idiomatic way to express existentials in PureScript.
+If the rank-2 types feel unfamiliar, invest the time to understand entry 119's explanation. The pattern appears throughout the ecosystem, and it is the idiomatic way to express existentials in PureScript.
 
 
 ---
 
 
-## 153. Existentials are an anti-pattern unless you have measured a performance need
+## 154. Existentials are an anti-pattern unless you have measured a performance need
 
 CPS-encoded existential types in PureScript allow you to hide a type parameter behind a universal quantifier. They are occasionally necessary and almost always the wrong tool.
 
@@ -162,7 +162,7 @@ Do not optimise for a problem you have not measured. Existentials are a power to
 ---
 
 
-## 154. Monomorphise hot paths
+## 155. Monomorphise hot paths
 
 Polymorphic functions in PureScript are compiled to JavaScript functions that receive type class dictionaries as extra arguments. At each call site, the compiler passes the appropriate dictionary. This is the mechanism behind ad-hoc polymorphism, and for most code the overhead is negligible.
 
@@ -180,7 +180,7 @@ sumNumbers = foldl add zero
 
 The monomorphic version allows the compiler (and the JavaScript engine's JIT) to eliminate the dictionary indirection. But profile first. The overwhelming majority of PureScript code is not in a hot loop, and premature monomorphisation sacrifices generality for speed you may not need.
 
-This is the complement to entry 64 on writing functions over `Foldable` (section VI). Both are right — generalise by default, specialise where profiling tells you to. The generic form is for API design; monomorphisation is for inner loops.
+This is the complement to entry 65 on writing functions over `Foldable` (section VI). Both are right — generalise by default, specialise where profiling tells you to. The generic form is for API design; monomorphisation is for inner loops.
 
 
 ---

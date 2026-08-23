@@ -6,7 +6,7 @@ Strunk and White's most famous rule is 'Omit needless words.' The same principle
 ---
 
 
-## 129. Do not name a value you immediately pass to one function
+## 130. Do not name a value you immediately pass to one function
 
 A `let` binding is documentation. It says: "this intermediate value has a role worth naming, or it will be used more than once." When neither is true, the binding is clutter.
 
@@ -35,7 +35,7 @@ This does not apply when the name genuinely clarifies intent. `let cutoff = 0.5`
 ---
 
 
-## 130. The principle, stated
+## 131. The principle, stated
 
 Naming a value is a promise that the name matters. Every binding asks the reader to remember it, track its scope, and consider whether it will appear again. In a language with good syntax for anonymous operations — lambda-case, record-update wildcards, accessor shorthand, point-free composition — many of these names are unnecessary. They exist not because the author chose them but because the author did not notice they could be omitted. The discipline is not to write the shortest code, but to write code where every name earns its place. When the structure of the expression already tells you what is happening — when position, type, and context are sufficient — let the syntax speak and keep the namespace clean. Omit needless names.
 
@@ -48,7 +48,7 @@ Naming a value is a promise that the name matters. Every binding asks the reader
 ---
 
 
-## 131. Sometimes you just need a let
+## 132. Sometimes you just need a let
 
 If the compiler is telling you something needs to be `pure` because it is in a `do` block, consider whether it might only need a `let`. Beginners often reach for `x <- pure (f y)` because everything else in the block uses `<-` and a plain declaration seems to require it. It does not — `let` works directly inside `do` blocks for pure bindings.
 
@@ -76,7 +76,7 @@ Every `<-` in a `do` block signals "this is where an effect happens." `let` says
 ---
 
 
-## 132. Avoid explicit recursion; use higher-order functions
+## 133. Avoid explicit recursion; use higher-order functions
 
 Most recursive patterns over data structures are already captured by standard combinators: `map`, `filter`, `foldl`, `foldr`, `traverse`, `unfold`, `mapAccumL`. Explicit recursion is harder to read, easier to get wrong, and — in a strict language — liable to blow the stack.
 
@@ -102,7 +102,7 @@ Reach for explicit recursion only when no standard combinator fits — tree trav
 ---
 
 
-## 133. Write the simplest code that the types permit
+## 134. Write the simplest code that the types permit
 
 If the compiler accepts your code and the meaning is clear to a reader, the code is good enough. Do not add type-level machinery to enforce an invariant the code already maintains. Do not abstract over a pattern that occurs once. Do not reach for a monad transformer when a function argument will do.
 
@@ -116,7 +116,7 @@ Write a concrete function. When a second use case appears, extract the commonali
 ---
 
 
-## 134. Use $ and # to reduce parentheses, but do not chain excessively
+## 135. Use $ and # to reduce parentheses, but do not chain excessively
 
 `$` (apply) and `#` (pipe) exist to reduce nested parentheses. One or two applications improve readability. A long chain trades one problem for another.
 
@@ -139,7 +139,7 @@ For pipelines longer than two or three steps, use `>>>` composition with a named
 ---
 
 
-## 135. Avoid dead code and commented-out blocks
+## 136. Avoid dead code and commented-out blocks
 
 Delete what you do not use. Version control remembers what you have deleted; your codebase should not.
 
@@ -151,7 +151,7 @@ The same applies to unused imports, unreachable branches, and functions that not
 ---
 
 
-## 136. Use purs-tidy and do not fight it
+## 137. Use purs-tidy and do not fight it
 
 `purs-tidy` is the community formatter for PureScript. Run it. Configure your editor to run it on save. Do not manually adjust its output.
 

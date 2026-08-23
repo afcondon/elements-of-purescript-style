@@ -6,7 +6,7 @@ PureScript borrows much from Haskell — syntax, type classes, algebraic data ty
 ---
 
 
-## 108. Unused bindings are not free in a strict language
+## 109. Unused bindings are not free in a strict language
 
 PureScript evaluates strictly, left to right. In Haskell, `let x = expensiveComputation in if flag then x else 0` never evaluates `expensiveComputation` when `flag` is false. In PureScript, it always does.
 
@@ -29,7 +29,7 @@ Code ported from Haskell or written with Haskell intuitions can silently do more
 ---
 
 
-## 109. Infinite structures do not work
+## 110. Infinite structures do not work
 
 PureScript's strict evaluation means there is no `Data.List.iterate` that produces values on demand. An expression like `iterate (_ + 1) 0` would attempt to build an infinite list immediately and never terminate.
 
@@ -39,7 +39,7 @@ If you want a stream, you need an explicit lazy type (such as `Data.Lazy` or a l
 ---
 
 
-## 110. Choose foldl for strict accumulation
+## 111. Choose foldl for strict accumulation
 
 In Haskell, `foldr` is often preferred because laziness lets it short-circuit and work on infinite structures. In PureScript, `foldl` is the natural choice for strict left-to-right accumulation, and `foldr` should be chosen only when the algebra requires right-association (building a list, for instance).
 
@@ -49,7 +49,7 @@ Picking the wrong fold does not produce wrong results — but it can produce unn
 ---
 
 
-## 111. Write explicit forall
+## 112. Write explicit forall
 
 PureScript does not silently introduce type variables. If a type signature mentions `a`, you must write `forall a.` to bring it into scope. There is no implicit universal quantification.
 
@@ -71,7 +71,7 @@ When you see a compiler error about an undefined type, and the name in question 
 ---
 
 
-## 112. Use <<< for composition, not .
+## 113. Use <<< for composition, not .
 
 In Haskell, `(.)` is function composition. In PureScript, the dot is reserved for record access and module-qualified names. Composition uses `<<<` (right-to-left) and `>>>` (left-to-right).
 
@@ -90,7 +90,7 @@ There is nothing more to say. The syntax is different; the concept is identical.
 ---
 
 
-## 113. Number literals are not overloaded — and the numeric hierarchy is different
+## 114. Number literals are not overloaded — and the numeric hierarchy is different
 
 In Haskell, `1` has type `Num a => a` — it can be an `Int`, an `Integer`, a `Double`, or any other numeric type. In PureScript, `1` is an `Int` and `1.0` is a `Number`. There is no `Num` class and no `fromInteger`.
 
@@ -114,7 +114,7 @@ In practice, this means: `(+)` requires `Semiring`, `(-)` requires `Ring`, `div`
 ---
 
 
-## 114. Operator sections use _, not partial application syntax
+## 115. Operator sections use _, not partial application syntax
 
 Haskell's operator sections let you write `(+ 2)` to mean "a function that adds 2 to its argument." PureScript uses an underscore placeholder instead.
 
@@ -134,7 +134,7 @@ The underscore syntax is more general than Haskell's: it works uniformly for bot
 ---
 
 
-## 115. Ensure stack safety with tailRecM
+## 116. Ensure stack safety with tailRecM
 
 In Haskell, monadic recursion is stack-safe by default because laziness defers the frames. PureScript is strict. A recursive monadic computation that recurs a thousand times will build a thousand stack frames and may overflow.
 
@@ -165,7 +165,7 @@ This matters whenever your recursion depth is proportional to data size rather t
 ---
 
 
-## 116. Mutual recursion defeats TCO
+## 117. Mutual recursion defeats TCO
 
 The PureScript compiler performs tail-call optimisation on self-recursive functions — a function that calls itself in tail position becomes a JavaScript `while` loop. But if function `A` calls function `B` which calls function `A`, neither is self-recursive, and no optimisation occurs.
 
@@ -195,7 +195,7 @@ For more complex cases where fusion is awkward, `tailRecM` (entry 18) works as w
 ---
 
 
-## 117. Phantom types and smart constructors replace most GADTs [Haskell]
+## 118. Phantom types and smart constructors replace most GADTs [Haskell]
 
 Haskell programmers arriving in PureScript quickly notice the absence of GADTs. The instinct is to reach for elaborate type-class encodings that simulate them. In most cases, a phantom type parameter with smart constructors does the job — compiles faster, produces better error messages, and can be read by a colleague who has not studied the Hasochism paper.
 
@@ -228,7 +228,7 @@ The phantom parameter does not appear in the data constructors, but the smart co
 ---
 
 
-## 118. Use continuation-passing style to encode existential types [Haskell]
+## 119. Use continuation-passing style to encode existential types [Haskell]
 
 If you hit a wall trying to express existential types in PureScript, this is the entry to bookmark. The technique is worth learning once — but you may not need it on day one.
 
@@ -271,7 +271,7 @@ When you need a heterogeneous collection — "a list of things that can each be 
 ---
 
 
-## 119. Use sum types directly for typed command/message patterns [Haskell]
+## 120. Use sum types directly for typed command/message patterns [Haskell]
 
 When you want different payload types for different commands — `Command Insert` carrying an `InsertPayload`, `Command Delete` carrying a `DeletePayload` — the Haskell instinct is to index the command type by a phantom and use GADT matching to eliminate it. In PureScript, use a plain sum type:
 
@@ -290,7 +290,7 @@ The general principle: when the simpler encoding covers your use case, prefer it
 ---
 
 
-## 120. Derived Ord for records compares fields in alphabetical label order
+## 121. Derived Ord for records compares fields in alphabetical label order
 
 When the compiler derives an `Ord` instance for a record type, it compares fields in alphabetical order by label name — not in the order they appear in the declaration.
 
@@ -310,7 +310,7 @@ If you need a specific comparison order — compare by age first, then by name �
 ---
 
 
-## 121. Boolean operations (||, &&) are non-strict — an exception to PureScript's strict semantics
+## 122. Boolean operations (||, &&) are non-strict — an exception to PureScript's strict semantics
 
 Entry 8 establishes that PureScript is strict. Boolean `||` and `&&` are the exception: the compiler implements short-circuit evaluation for `Boolean`'s `HeytingAlgebra` instance. `false && expensiveCheck` does not evaluate `expensiveCheck`.
 

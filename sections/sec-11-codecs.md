@@ -6,7 +6,7 @@ Data enters your program as untyped bytes and leaves as untyped bytes. The trans
 ---
 
 
-## 124. Use purescript-parsing for structured parsing, not regex
+## 125. Use purescript-parsing for structured parsing, not regex
 
 A regular expression can validate a pattern. A parser combinator can extract structure, report precise error positions, and compose with other parsers.
 
@@ -36,7 +36,7 @@ Use regex for quick guards at the boundary -- "does this look like an email?" Us
 ---
 
 
-## 125. Use codec for JSON, not hand-written decoders
+## 126. Use codec for JSON, not hand-written decoders
 
 A hand-written `EncodeJson` instance and a hand-written `DecodeJson` instance are two independent pieces of code that must agree on field names, nesting structure, and handling of optional values. They will disagree eventually.
 
@@ -62,7 +62,7 @@ When you need custom handling -- a sum type encoded as a tagged string, a date e
 ---
 
 
-## 126. Decode at the boundary, work with types internally
+## 127. Decode at the boundary, work with types internally
 
 JSON, Foreign values, URL query parameters, and localStorage strings are external representations. They belong at the edge of your application -- the point where data enters or leaves. Inside the boundary, everything should be typed.
 
@@ -88,7 +88,7 @@ Push the parse to the outermost layer. If a function three levels deep needs to 
 ---
 
 
-## 127. JSON codecs should be values, not type class instances
+## 128. JSON codecs should be values, not type class instances
 
 The `EncodeJson` and `DecodeJson` type classes from `argonaut` are convenient — `encodeJson myValue` picks up the instance automatically. But this convenience has costs that grow with your codebase.
 
@@ -110,13 +110,13 @@ userLogCodec :: JsonCodec User    -- for structured logs, omitting PII
 
 `purescript-codec-argonaut` gives you bidirectional codec values that are explicit at every call site, composable via ordinary function composition, and guarantee that encode and decode agree by construction. (Gary Burgess)
 
-See also entry 102 on not using `show` for serialisation — the same principle of making encoding decisions visible and deliberate.
+See also entry 103 on not using `show` for serialisation — the same principle of making encoding decisions visible and deliberate.
 
 
 ---
 
 
-## 128. Optics: a lens is a getter and a setter that agree
+## 129. Optics: a lens is a getter and a setter that agree
 
 If you find yourself writing paired functions — `getField` and `setField`, or `readNested` and `updateNested` — you have half a lens. The `profunctor-lenses` library gives you composable access paths into nested structures, and the two halves are guaranteed to agree because they are one value, not two.
 

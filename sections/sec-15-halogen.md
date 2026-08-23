@@ -6,7 +6,7 @@ Halogen is PureScript's most widely used UI framework. These entries cover patte
 ---
 
 
-## 155. Prefer render functions over components
+## 156. Prefer render functions over components
 
 Not every piece of reusable HTML needs to be a Halogen component. A component carries overhead: a `State` type, an `Action` type, an `initialState`, a `handleAction`, lifecycle management, and a slot type at every use site. If the piece in question has no independent state and raises no actions, all of that machinery is waste.
 
@@ -26,7 +26,7 @@ Use a component when you need internal state, subscriptions, or effects in respo
 ---
 
 
-## 156. Store minimal canonical state; derive the rest in render
+## 157. Store minimal canonical state; derive the rest in render
 
 If a value can be computed from other state, compute it in `render`. Do not store it alongside the data it depends on.
 
@@ -61,7 +61,7 @@ The canonical state is the smallest set of values from which everything else can
 ---
 
 
-## 157. Model component actions as what happened, not what to do
+## 158. Model component actions as what happened, not what to do
 
 Name actions after events, not effects. An action is a record of something that occurred; the handler decides what it means.
 
@@ -93,7 +93,7 @@ Actions named after events also compose better with parent-child communication. 
 ---
 
 
-## 158. Use the ReaderT pattern for non-trivial Halogen apps
+## 159. Use the ReaderT pattern for non-trivial Halogen apps
 
 As applications grow, components need access to shared resources: API clients, configuration, authentication state. Threading these as props through every layer of the component tree does not scale.
 
@@ -116,7 +116,7 @@ instance MonadAsk Env AppM where
 
 For global mutable state — the current user, a notification queue — prefer `halogen-store` over rolling your own `ReaderT` with a `Ref`. The library handles subscription, notification of changes, and cleanup. Reserve manual `ReaderT` + `Ref` for cases where you need fine-grained control over when subscribers are notified. (Thomas Honeyman)
 
-See also entry 92 on newtypes for transformer stacks, and entry 165 on the capability pattern that builds on this foundation.
+See also entry 93 on newtypes for transformer stacks, and entry 166 on the capability pattern that builds on this foundation.
 
 
 ---
